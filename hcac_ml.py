@@ -37,36 +37,17 @@ class ML(Experiment):
 
     def MITML(self, X, A0, slack):
         A = np.matrix(A0)
-        # n = len(X)*4
-        # print X
         n = 1
-        # print "Cluster similarity", len(self.clusterSimilarityDict.keys())
-        # print self.clusterSimilarityDict
-        # print
-        # print "Cluster Dissimilarity", len(self.clusterDissimilarityDict.keys())
-        # print self.clusterDissimilarityDict
-        # print
-        # print "Instance Similarity", len(self.instanceSimilarityDict.keys())
-        # print self.instanceSimilarityDict
-        # print
-        #
-        # print "upper instance", len(self.upperInstance.keys())
-        # print self.upperInstance
-        # print "Instance Dissimilarity", len(self.instanceDissimilarityDict)
-        # print self.instanceDissimilarityDict
-
         A = np.matrix(A0)
         e = {}
         lamb = {}
         cont = 0
-        # print "getting dissimilarities"
         for pair in self.instanceDissimilarityDict:
             if self.instanceDissimilarityDict[pair] == 0.0:
                 e[pair] = 0.01
             else:
                 e[pair] = float(self.instanceDissimilarityDict[pair])
             lamb[pair] = 0.0
-        # print "getting similarities"
         for pair in self.instanceSimilarityDict:
             if self.instanceSimilarityDict[pair] == 0.0:
                 e[pair] = 0.001
@@ -77,16 +58,11 @@ class ML(Experiment):
         cont = 0
         converge = True
         maxIteractions = 0
-        # print "getting matrix"
         while converge:
-            # print cont
-            # print "from similarities"
             for pair in self.instanceSimilarityDict:
-                # print cont,2
                 cont +=1
                 delta = -1
                 i,j = pair
-                # print X.shape
                 row = np.matrix(np.subtract(X[i],X[j]))
                 p = row*A*row.T
                 if(p == 0.00):
@@ -107,15 +83,11 @@ class ML(Experiment):
                 part3 = np.dot(part1, part2)
                 A = np.add(A, np.multiply(beta, part3))
             cont = 0
-            # print "from dissimilarities"
             for pair in self.instanceDissimilarityDict:
-                # print cont
                 cont +=1
                 delta = 1
                 i,j = pair
-                # print X.shape
                 row = np.matrix(np.subtract(X[i],X[j]))
-                # print row, "row"
                 p = float(row*A*row.T)
                 if(p == 0.00):
                     p = 0.001
@@ -125,7 +97,6 @@ class ML(Experiment):
                 part3 = slack/float(e[pair])
                 arg2 = np.multiply(part1, np.subtract(part2,part3))
                 alpha =  min(arg1, arg2)
-                # print alpha, "alpha"
                 beta = delta*alpha / (1 - delta*alpha*p)
 
                 e[pair] = slack * e[pair] / (slack + delta * alpha * e[pair])
@@ -138,43 +109,32 @@ class ML(Experiment):
                 cont +=1
             else:
                 converge = False
-        # print "finished itml"
         return A
 
 
     def setClusterSimilarity(self, abs_pool, minEntropy, dist):
-        # clusterDict = {}
         x,y = abs_pool[minEntropy]
 
         p = swap(x,y)
         if dist == 0.0:
             dist = 0.001
-        # clusterDict[p] = dist
-        # self.clusterSimilarity.append(clusterDict)
         self.clusterSimilarityDict[p] = dist
         self.upperCluster[p] = dist
         self.clusterSimilarityList.append(p)
 
     def setClusterDissimilarity(self, entropy, abs_pool, rel_pool):
-        # clusterDict = {}
         minEntropy = np.argmin(entropy[:,1])
-        # print entropy[:,1], "entropy", minEntropy
         dist = self.distance[rel_pool[minEntropy]]
         if dist == 0.0:
             dist = 0.001
         for i in range(0, minEntropy):
             x,y = abs_pool[i]
             p = swap(x,y)
-            # print "p",p
-            # clusterDict[p] = dist
             self.lowerCluster[p] = dist
             self.clusterDissimilarityDict[p] = dist
-            # print dist
-
 
     def getAbsoluteIndex(self,x):
         n = self.number_of_elements
-        # print(x,n)
         if (x >= self.number_of_elements):
             a = self.result_cluster[x - n][0]
             b = self.result_cluster[x - n][1]
@@ -197,10 +157,7 @@ class ML(Experiment):
         boundDict = {}
         instanceDict = {}
         n = self.number_of_elements
-        # for clusterDict in clusterConstraints:
-            # print clusterDict
         for pair in clusterConstraints:
-            # print pair
             dist = clusterConstraints[pair]
             x,y = pair
             pair = swap(x,y)
@@ -214,15 +171,9 @@ class ML(Experiment):
                         self.upperInstance[(ia,ib)] = dist
                     else:
                         self.lowerInstance[(ia,ib)] = dist
-                    # boundDict[(ia,ib)] = dist
-            # if b != 0:
-            #     self.lowerInstance = dict(boundDict)
-            # else:
-            #     self.upperInstance = dict(boundDict)
         return instanceDict
 
     def getInstaceConstraintsFromCluster(self):
-        # pass
         self.instanceSimilarityDict = dict(self.getConstraintsFromCluster(self.clusterSimilarityDict, 0))
         self.instanceDissimilarityDict = dict(self.getConstraintsFromCluster(self.clusterDissimilarityDict, 1))
 

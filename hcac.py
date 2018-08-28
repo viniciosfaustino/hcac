@@ -15,7 +15,6 @@ import time
 import math
 
 np.set_printoptions(threshold=np.nan)
-# np.set_printoptions(suppress=True, linewidth=10000)
 np.set_printoptions(suppress=True, linewidth=10000, precision=3)
 
 class Dataset:
@@ -76,6 +75,7 @@ class HCAC:
         return distance
         pass
     #///////////////////////#
+    #this function returns the array of confidence of the distance matrix
     def get_confidence(self):
         self.confidence = []
         distance_copy = np.copy(self.distance)
@@ -101,6 +101,7 @@ class HCAC:
         self.elements_in_cluster = [1]*self.distance.shape[0]
 
     #///////////////////#
+    #this function makes the pool that will be presented to the user, to choose the proper merge
     def query_pool(self, a, b, current_cluster):
         dc = np.copy(self.distance)
         pos = current_cluster[a], current_cluster[b]
@@ -143,6 +144,7 @@ class HCAC:
 
         return choice
     #/////////////////////#
+    #this function will make the clustering proccess
     def fit(self, dataset):
         self.distance = self.distance_function(dataset.data)
         np.fill_diagonal(self.distance, np.inf)

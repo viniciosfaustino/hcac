@@ -26,11 +26,13 @@ class Experiment(HCAC):
         self.cluster = None                 #the structure used to keep the possible merges
         self.result_cluster = None          #the structure used to store all the merges made with the dataset
         self.distance = None                #distance matrix used
-        self.elements_in_cluster = None
-        self.target = target
+        self.elements_in_cluster = None     #number of elements in each cluster
+        self.target = target                #contains the labels of the examples
 
 
     def get_entropy(self, a, b):
+        #this function gets two cluster a calculates the entropy of the merge of them
+        #it returns a float number with the entropy
         a = int(a)
         b = int(b)
         target = []
@@ -62,6 +64,7 @@ class Experiment(HCAC):
         return ent
 
     def get_class(self, x):
+        #this recursive function will get all the examples class from the target
         x = int(x)
         if (x >= self.number_of_elements):
             pos = x - self.number_of_elements
@@ -76,6 +79,8 @@ class Experiment(HCAC):
 
     #////////////////#
     def f_score(self):
+        #this function calculates the f_score of the resultant cluster after the clustering process
+        #it returns a tuple that contains the average fscore and a list with each class fscore
         r = 0
         last = self.cluster[-1,:]
         x = int(last[0])

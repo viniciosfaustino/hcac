@@ -7,18 +7,10 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem.snowball import SnowballStemmer
 import string
-
 import sys
 
-def remove_punctuation(s):
-    s = s.translate(None, string.punctuation)
-    return s
-
-def set_lower(s):
-    s = s.lower()
-    return s
-
 def preprocessing(data):
+    #this function removes all the punctuation in the text and set all characters to lowercase
     a,b = data.shape
     for i in xrange(a):
         data[i][0] = data[i][0].lower()
@@ -26,6 +18,7 @@ def preprocessing(data):
     return np.array(data)
 
 def text_to_data():
+    #this function will get the text file, makes the preprocessing and return a numpy array with the bag of words
     divisor = 1
     input = sys.argv[1]
     data = []

@@ -11,6 +11,8 @@ import time
 #to run the program, execute:
 # $python tests.py <path to save the results>
 
+#this file is a structure to use for testing datasets
+
 def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean',method=None):
     file_path = str(sys.argv[1])
     f = open(str(file_path+dataset_name+str(p_intervention)+".txt"), "w+")
