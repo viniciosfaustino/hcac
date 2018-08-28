@@ -42,17 +42,17 @@ def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean
 
 def run_full_test(dataset_name, dataset, distance_function=None):
     run_test(dataset_name, dataset, 0, distance_function)
-    # run_test(dataset_name, dataset, 5, distance_function)
-    # run_test(dataset_name, dataset, 10, distance_function)
-    # run_test(dataset_name, dataset, 20, distance_function)
-    # run_test(dataset_name, dataset, 30, distance_function)
-    # run_test(dataset_name, dataset, 40, distance_function)
-    # run_test(dataset_name, dataset, 50, distance_function)
-    # run_test(dataset_name, dataset, 60, distance_function)
-    # run_test(dataset_name, dataset, 70, distance_function)
-    # run_test(dataset_name, dataset, 80, distance_function)
-    # run_test(dataset_name, dataset, 90, distance_function)
-    # run_test(dataset_name, dataset, 100, distance_function)
+    run_test(dataset_name, dataset, 5, distance_function)
+    run_test(dataset_name, dataset, 10, distance_function)
+    run_test(dataset_name, dataset, 20, distance_function)
+    run_test(dataset_name, dataset, 30, distance_function)
+    run_test(dataset_name, dataset, 40, distance_function)
+    run_test(dataset_name, dataset, 50, distance_function)
+    run_test(dataset_name, dataset, 60, distance_function)
+    run_test(dataset_name, dataset, 70, distance_function)
+    run_test(dataset_name, dataset, 80, distance_function)
+    run_test(dataset_name, dataset, 90, distance_function)
+    run_test(dataset_name, dataset, 100, distance_function)
 
 
 if __name__ == '__main__':
