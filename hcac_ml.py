@@ -36,7 +36,6 @@ class ML(Experiment):
 
 
     def MITML(self, X, A0, slack):
-        A = np.matrix(A0)
         n = 1
         A = np.matrix(A0)
         e = {}
@@ -132,6 +131,7 @@ class ML(Experiment):
             p = swap(x,y)
             self.lowerCluster[p] = dist
             self.clusterDissimilarityDict[p] = dist
+
 
     def getAbsoluteIndex(self,x):
         n = self.number_of_elements

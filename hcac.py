@@ -17,10 +17,17 @@ import math
 np.set_printoptions(threshold=np.nan)
 np.set_printoptions(suppress=True, linewidth=10000, precision=3)
 
+def normalize_data(data):
+    for i in xrange(data.shape[0]):
+        if np.linalg.norm(data[i]) > 0:
+            data[i] = data[i]/np.linalg.norm(data[i])
+    return data
+
 class Dataset:
     def __init__(self, data, target):
         self.data = data
         self.target = target
+
 
 class HCAC:
 
@@ -34,7 +41,6 @@ class HCAC:
         self.result_cluster = None          #the structure used to store all the merges made with the dataset
         self.distance = None                #distance matrix used
         self.elements_in_cluster = None
-
     #////////////////////////////////#
     #this function gets a ndarray of the data and returns a distance matrix using a previous informed distance method
     def distance_function(self, data):
@@ -75,7 +81,6 @@ class HCAC:
         return distance
         pass
     #///////////////////////#
-    #this function returns the array of confidence of the distance matrix
     def get_confidence(self):
         self.confidence = []
         distance_copy = np.copy(self.distance)
@@ -101,7 +106,6 @@ class HCAC:
         self.elements_in_cluster = [1]*self.distance.shape[0]
 
     #///////////////////#
-    #this function makes the pool that will be presented to the user, to choose the proper merge
     def query_pool(self, a, b, current_cluster):
         dc = np.copy(self.distance)
         pos = current_cluster[a], current_cluster[b]
@@ -134,7 +138,6 @@ class HCAC:
             entropy.append((rel_pool[i],self.get_entropy(abs_pool[i][0],abs_pool[i][1])))
 
         entropy = np.array(entropy)
-        # print entropy
         k = np.argsort(entropy[:,1])
         entropy = entropy[k]
         if entropy[0][1] == 0.0:
@@ -144,7 +147,6 @@ class HCAC:
 
         return choice
     #/////////////////////#
-    #this function will make the clustering proccess
     def fit(self, dataset):
         self.distance = self.distance_function(dataset.data)
         np.fill_diagonal(self.distance, np.inf)
