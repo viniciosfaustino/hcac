@@ -63,7 +63,7 @@ class Experiment(HCAC):
 
         return ent
 
-    def get_class(self, x):
+    def get_class_recursive(self, x):
         #this recursive function will get all the examples class from the target
         x = int(x)
         if (x >= self.number_of_elements):
@@ -76,6 +76,20 @@ class Experiment(HCAC):
             class_index = int(self.target[x])
             self.number_of_elements_per_class[class_index]  += 1
         return
+
+    def get_class(self, x):
+        x = int(x)
+        stck = []
+        stck.insert(0,x)
+        while stck:
+            x = int(stck.pop())
+            if (x >= self.number_of_elements):
+                pos = x - self.number_of_elements
+                stck.insert(0, self.result_cluster[pos][1])
+                stck.insert(0, self.result_cluster[pos][0])
+            else:
+                class_index = int(self.target[x])
+                self.number_of_elements_per_class[class_index] +=1
 
     #////////////////#
     def f_score(self):
@@ -117,7 +131,6 @@ class Experiment(HCAC):
         self.number_of_elements_per_class = np.zeros(number_of_classes)
         self.get_class(x)
         self.get_class(y)
-
         for i in range(0,number_of_classes):
             score = score + (self.number_of_elements_per_class[i]/float(self.number_of_elements)) * float(f[i])
         return (score, f)

@@ -15,9 +15,11 @@ import time
 
 def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean',method=None):
     file_path = str(sys.argv[1])
-    f = open(str(file_path+dataset_name+str(p_intervention)+".txt"), "w+")
-    saida = open(str(file_path+"results_"+dataset_name+".txt"), "a")
-    score_file = open(str(file_path+"fscore_"+dataset_name+".txt"), "a")
+    if file_path[-1] == '/':
+        file_path = file_path[0,-1]
+    f = open(str(file_path+"/"+dataset_name+str(p_intervention)+".txt"), "w+")
+    saida = open(str(file_path+"/results_"+dataset_name+".txt"), "a")
+    score_file = open(str(file_path+"/fscore_"+dataset_name+".txt"), "a")
     start_time = time.time()
     n_intervention = int(dataset.data.shape[0]/100.0 * float(p_intervention)) - 1
     h = Experiment(n_intervention,dataset.data.shape[0], distance_function, 5, dataset.target)
