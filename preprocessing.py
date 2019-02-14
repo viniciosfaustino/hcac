@@ -25,7 +25,7 @@ def text_to_data():
     target = []
     file = open(input, "r")
     for line in file:
-        print line
+        print(line)
         data.append([str(line.split("\t")[0]).decode('utf8')])
         target.append([int(line.split("\t")[1])])
     file.close()
@@ -44,7 +44,7 @@ def text_to_data():
     size = data.shape[0]/divisor
     cont = 0
     for i in xrange(data.shape[0]/divisor):
-        print "1",cont, "of", size
+        print("1",cont, "of", size)
         cont +=1
         word_tokens.append(word_tokenize(data[i][0]))
         fs = [w for w in word_tokens[i] if not w in stop_words]
@@ -57,7 +57,7 @@ def text_to_data():
     number_of_words = len(filtered_sentence)
     cont = 0
     for i in xrange(data.shape[0]/divisor):
-        print "2",cont, "of", size
+        print("2",cont, "of", size)
         cont +=1
         v = np.zeros(number_of_words)
         for word in word_tokens[i]:
@@ -65,7 +65,7 @@ def text_to_data():
                 v[filtered_sentence.index(word)] +=1
         bow.append(v)
     bow = np.array(bow)
-    print bow.shape, target.shape
+    print(bow.shape, target.shape)
     data = np.append(bow, target[0:target.shape[0]/divisor], axis=1)
     return data
 

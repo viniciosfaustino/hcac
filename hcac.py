@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import time
 import math
 
-np.set_printoptions(threshold=np.nan)
-np.set_printoptions(suppress=True, linewidth=10000, precision=3)
+# np.set_printoptions(threshold=np.nan)
+# np.set_printoptions(suppress=True, linewidth=10000, precision=3)
 
 def normalize_data(data):
     for i in xrange(data.shape[0]):
@@ -49,7 +49,7 @@ class HCAC:
         else:
             dist = euclidean_distances(data) #by default, if it gets a unknown distance function, returns the euclidean distances
             if (self.dist_func != "euclidean" and self.dist_func != None):
-                print "Distance function '", self.dist_func, "' is invalid, using euclidean instead."
+                print("Distance function '", self.dist_func, "' is invalid, using euclidean instead.")
 
         np.fill_diagonal(dist, np.inf)        #filling the diagonal with "infinity values" to avoid mistakes with the smallest distance
         return dist
