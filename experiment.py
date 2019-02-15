@@ -112,7 +112,7 @@ class Experiment(HCAC):
             pc = np.where(self.cluster[:,0:2] == j)
             cluster_size = self.cluster[pc[0][0]][3]
             self.get_class(int(j))
-            for i in xrange(number_of_classes):
+            for i in range(number_of_classes):
                 n = self.number_of_elements_per_class[i]
                 if(k[i]>0):
                     r = n/k[i]

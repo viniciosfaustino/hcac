@@ -17,7 +17,7 @@ import time
 def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean',method=None):
     file_path = str(sys.argv[1])
     if file_path[-1] == '/':
-        file_path = file_path[0,-1]
+        file_path = file_path[0:-1]
     f = open(str(file_path+"/"+dataset_name+str(p_intervention)+".txt"), "w+")
     saida = open(str(file_path+"/results_"+dataset_name+".txt"), "a")
     score_file = open(str(file_path+"/fscore_"+dataset_name+".txt"), "a")
@@ -126,16 +126,16 @@ if __name__ == '__main__':
     # dataset = Dataset(data,target)
     # run_full_test("brasui2", dataset, "cosine")
 
-    file_handler = open("datasets/edilma.data", "rb")
+    file_handler = open("datasets/ebrasui.data", "rb")
     # dataset = np.loadtxt("datasets/edilma.data")
-    dataset = pickle.load(file_handler)
+    dataset = np.array(pickle.load(file_handler))
     data,target = split_data_target(dataset)
-    print(data.shape)
-    for i in range(data.shape[0]):
-        print(len(data[i][0]),"\n")
+    print(data)
+    # for i in range(data.shape[0]):
+    #     print(len(data[i][0]),"\n")
     # for i in range(data.shape[0]):
     #     print(data[i].shape)
     dataset = Dataset(data,target)
-    run_full_test("esolo", dataset, "euclidean")
+    run_full_test("ebrasui", dataset, "euclidean")
 #to run the program, execute:
 # $python tests.py <path to save the results>

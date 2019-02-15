@@ -76,6 +76,7 @@ def save_data(data):
 def split_data_target(data):
     target = np.array(data[:,-1], dtype=int)
     data = np.delete(data, np.s_[-1], axis=1)
+    print(data)
     return data, target
 
 if __name__ == '__main__':

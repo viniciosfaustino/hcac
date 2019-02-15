@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import euclidean_distances
 from scipy.spatial import distance
 from scipy.cluster.hierarchy import linkage
 import sys
+import pickle
 
 
 def run_test(dataset, name):
@@ -19,7 +20,7 @@ def run_test(dataset, name):
     h = ML(int(n*0.3),dataset.data.shape[0], "euclidean", 5, dataset.target)
     A = np.identity(len(dataset.data[0]))
     h.fit(dataset) #running semi supervised clustering
-    print h.f_score()
+    print(h.f_score())
     h.getInstaceConstraintsFromCluster()
     X = dataset.data
     slack = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
@@ -38,21 +39,21 @@ def run_test(dataset, name):
 
 
 if __name__ == '__main__':
-    dataset = datasets.load_iris()
-    run_test(dataset, "iris")
-    data = np.genfromtxt("datasets/breast-cancer-wisconsin2.data", delimiter=",")
-    target = np.array(data[:,-1], dtype=int)
-    data = np.delete(data, np.s_[-1], axis=1)
-    target = np.divide(target, 4)
-    dataset = Dataset(data,target)
-    run_test(dataset, "breast_cancer")
-
-    data = np.genfromtxt("datasets/ctg_norm.data", delimiter=",")
-    target = np.array(data[:,-1], dtype=int)
-    data = np.delete(data, np.s_[-1], axis=1)
-    target = np.subtract(target, 1)
-    dataset = Dataset(data, target)
-    run_test(dataset, "ctg")
+    # dataset = datasets.load_iris()
+    # run_test(dataset, "iris")
+    # data = np.genfromtxt("datasets/breast-cancer-wisconsin2.data", delimiter=",")
+    # target = np.array(data[:,-1], dtype=int)
+    # data = np.delete(data, np.s_[-1], axis=1)
+    # target = np.divide(target, 4)
+    # dataset = Dataset(data,target)
+    # run_test(dataset, "breast_cancer")
+    #
+    # data = np.genfromtxt("datasets/ctg_norm.data", delimiter=",")
+    # target = np.array(data[:,-1], dtype=int)
+    # data = np.delete(data, np.s_[-1], axis=1)
+    # target = np.subtract(target, 1)
+    # dataset = Dataset(data, target)
+    # run_test(dataset, "ctg")
 
     # data = np.genfromtxt("datasets/ecoli2.data", delimiter=",")
     # data = np.delete(data, np.s_[-1], axis=1)
@@ -73,3 +74,16 @@ if __name__ == '__main__':
     # target = np.array(tar)
     # dataset = Dataset(data, target)
     # run_test(dataset, "ecoli2")
+
+    file_handler = open("datasets/edilma.data", "rb")
+    # dataset = np.loadtxt("datasets/edilma.data")
+    dataset = np.array(pickle.load(file_handler))
+    data,target = split_data_target(dataset)
+    print(data.shape)
+    # for i in range(data.shape[0]):
+    #     print(len(data[i][0]),"\n")
+    # for i in range(data.shape[0]):
+    #     print(data[i].shape)
+    dataset = Dataset(data,target)
+    run_test(dataset, "esolo")
+    # run_full_test("esolo", dataset, "euclidean")

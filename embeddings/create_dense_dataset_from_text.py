@@ -12,6 +12,7 @@ import sys
 import re
 import csv
 import pickle
+from nltk.corpus import stopwords
 model = KeyedVectors.load_word2vec_format('cbow_s50.txt')
 max_dim = (0,0)
 dense_dataset = []
@@ -36,10 +37,13 @@ def preprocessing(sentence):
     se = se.replace(".","")
     se = " ".join(se.split())
     sentence = se.split()
+    filtered_sentence = []
+    stop_words = set(stopwords.words("portuguese"))
+    filtered_sentence = [w for w in sentence if not w in stop_words]
     #for j in range(len(sentences[i])):
         #sentences[i][j] = sentences[i][j].decode("utf-8")
     #se = se.translate(translator)
-    return sentence
+    return filtered_sentence
 
 
 #------------------------------------------------------------
@@ -53,7 +57,7 @@ def load_dataset(dataset):
 
 #-------------------------------------------------------------
 #this function should get the embedding of the sentences
-def get_embeddings(sentences, labels=None, max_dim=None):
+def get_embeddings_concatenated(sentences, labels=None, max_dim=None):
     for i,sentence in enumerate(sentences):
         # print(sentence)
         sentence = preprocessing(sentence)
@@ -77,19 +81,54 @@ def get_embeddings(sentences, labels=None, max_dim=None):
     return embeddings, max_dim
 
 
+
+#---------------------------------------------------------
+def get_embeddings(sentences, labels=None, max_dim=None):
+    for i,sentence in enumerate(sentences):
+        # print(sentence)
+        sentence = preprocessing(sentence)
+        emb = []
+        for w in sentence:
+            #emb.append(model.word_vec(str(w).decode("utf-8")))
+            try:
+                temp  = model.word_vec(str(w))
+                # emb.append(model.word_vec(str(w)))
+
+            except:
+                #emb.append(np.zeros(50))
+                temp = np.zeros(50)
+
+            emb.append(temp)
+        emb = np.array(emb)
+        average = np.average(emb, axis=0)
+        #row = [emb,label[i]]
+        embeddings.append(average)
+        max_dim = max(max_dim, emb.shape)
+    return embeddings, max_dim
+
+
 #--------------------------------------------------------------
 #as long as the sentences have a different number of words and for computational purposes the shape of them must be equal
 #this function will set the default shape as the max of all the sentences, doing some zero padding to all the ones that doesn't fit the shape
 def do_padding(embeddings, max_dim, label):
+    print("MAXDIM",max_dim)
+    data = []
     for i,em in enumerate(embeddings):
         if em.shape != max_dim and em != []:
             print("em shape",em.shape)
-            new_row = np.zeros(max_dim[0]*max_dim[1]).reshape(max_dim)
-            new_row[0:em.shape[0],0:em.shape[1]] += em
-            new_row.reshape(max_dim[0] * max_dim[1])
-            embeddings[i] = new_row
-        dense_dataset.append([em,label[i]])
+            new_row = np.zeros(max_dim[0]).reshape(max_dim)
+            new_row[0:em.shape[0]] += em
+            new_row.reshape(max_dim[0])
+            print("new_row shape ",new_row.shape)
 
+        data.append(new_row.tolist())
+        # dense_dataset.append([em,label[i]])
+    data = np.array(data)
+    label = np.array(label).reshape(data.shape[0],1)
+    print("data.shape:",data.shape)
+    print("label.shape:",label.shape)
+    print(data[1])
+    dense_dataset = np.append(data, label, axis=1)
     return dense_dataset
 
 #------------------------------------------------------------
@@ -104,8 +143,8 @@ def load_dataset_from_file(path):
     target = []
     file = open(input, "r")
     for line in file:
-        data.append(str(line.split(",")[0]))
-        target.append(int(line.split(",")[1]))
+        data.append(str(line.split("\t")[0]))
+        target.append(int(line.split("\t")[1]))
     file.close()
     # data = np.array(data)
 
@@ -116,18 +155,22 @@ def load_dataset_from_file(path):
 def from_text_to_embeddings():
     # input_path = sys.argv[1]
     # output_path = sys.argv[2]
-    input_path = "/home/vinicios/reps/hcac/datasets/soloteste.csv"
-    output_path ="/home/vinicios/reps/hcac/datasets/esolo.data"
+    input_path = "/home/vinicios/reps/hcac/datasets/brasui2.csv"
+    output_path ="/home/vinicios/reps/hcac/datasets/ebrasui.data"
     dataset = load_dataset_from_file(input_path)
     sentences,labels = load_dataset(dataset)
     # sentences = preprocessing(sentences)
     _max_dim = (0,0)
     embeddings, max_dim = get_embeddings(sentences, max_dim=_max_dim)
-    dense_dataset = do_padding(embeddings, max_dim, labels)
+    #dense_dataset = do_padding(embeddings, max_dim, labels)
+    embeddings = np.array(embeddings)
+    print("embeddings shape",embeddings.shape)
+    label = np.array(labels).reshape(embeddings.shape[0],1)
+    dense_dataset = np.append(embeddings,label, axis=1)
     return dense_dataset
 
 def save_to_file(dense_dataset):
-    output_path = "/home/vinicios/reps/hcac/datasets/edilma.data"
+    output_path = "/home/vinicios/reps/hcac/datasets/ebrasui.data"
     file_handler = open(output_path, 'wb')
     pickle.dump(dense_dataset, file_handler)
     # np.savetxt(output, dense_dataset)

@@ -3,4 +3,5 @@ embeddings/*s50.txt
 datasets/Dilma*
 datasets/edilma*
 datasets/soloteste.csv
+datasets/*
 embeddings/dataset.data
