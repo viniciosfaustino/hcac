@@ -1,0 +1,60 @@
+Percentage of intervention: 0
+F-Score: 0.6668858133958198
+F-Score per class: [0.66866077 0.66511085]
+Elapsed time: 965.49 s
+---------------------------------
+Percentage of intervention: 5
+F-Score: 0.6660199928334511
+F-Score per class: [0.66692913 0.66511085]
+Elapsed time: 1011.28 s
+---------------------------------
+Percentage of intervention: 10
+F-Score: 0.6670174801978843
+F-Score per class: [0.66970565 0.66432931]
+Elapsed time: 1037.73 s
+---------------------------------
+Percentage of intervention: 20
+F-Score: 0.6673751670709905
+F-Score per class: [0.6711953  0.66355504]
+Elapsed time: 1074.2 s
+---------------------------------
+Percentage of intervention: 30
+F-Score: 0.666551585272944
+F-Score per class: [0.66954813 0.66355504]
+Elapsed time: 1079.48 s
+---------------------------------
+Percentage of intervention: 40
+F-Score: 0.6670148715563158
+F-Score per class: [0.6686606  0.66536914]
+Elapsed time: 1085.62 s
+---------------------------------
+Percentage of intervention: 50
+F-Score: 0.6658438296596191
+F-Score per class: [0.66822612 0.66346154]
+Elapsed time: 1094.09 s
+---------------------------------
+Percentage of intervention: 60
+F-Score: 0.6667847447502024
+F-Score per class: [0.67298079 0.66058869]
+Elapsed time: 1171.41 s
+---------------------------------
+Percentage of intervention: 70
+F-Score: 0.6649296113022609
+F-Score per class: [0.66953349 0.66032573]
+Elapsed time: 1219.9 s
+---------------------------------
+Percentage of intervention: 80
+F-Score: 0.6664565131360646
+F-Score per class: [0.66935799 0.66355504]
+Elapsed time: 1222.84 s
+---------------------------------
+Percentage of intervention: 90
+F-Score: 0.6639676113360324
+F-Score per class: [0.66449001 0.66344521]
+Elapsed time: 1229.51 s
+---------------------------------
+Percentage of intervention: 100
+F-Score: 0.6658441558441559
+F-Score per class: [0.66779221 0.6638961 ]
+Elapsed time: 1310.12 s
+---------------------------------
