@@ -9,6 +9,7 @@ from scipy.spatial import distance
 from scipy.cluster.hierarchy import linkage
 import sys
 import pickle
+from preprocessing import split_data_target
 
 
 def run_test(dataset, name):
@@ -75,8 +76,8 @@ if __name__ == '__main__':
     # dataset = Dataset(data, target)
     # run_test(dataset, "ecoli2")
 
-    file_handler = open("datasets/edilma.data", "rb")
-    # dataset = np.loadtxt("datasets/edilma.data")
+    file_handler = open("datasets/clean_avg_tweet2.data", "rb")
+    # dataset = np.loadtxt("datasets/eleicao_bow.data")
     dataset = np.array(pickle.load(file_handler))
     data,target = split_data_target(dataset)
     print(data.shape)
@@ -85,5 +86,5 @@ if __name__ == '__main__':
     # for i in range(data.shape[0]):
     #     print(data[i].shape)
     dataset = Dataset(data,target)
-    run_test(dataset, "esolo")
+    run_test(dataset, "clean_avg_tweet2")
     # run_full_test("esolo", dataset, "euclidean")

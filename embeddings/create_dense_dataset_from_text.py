@@ -100,6 +100,7 @@ def get_embeddings(sentences, labels=None, max_dim=None, remove_stopwords=False)
             emb.append(temp)
         emb = np.array(emb)
         average = np.average(emb, axis=0)
+        average /=(np.linalg.norm(average))
         #row = [emb,label[i]]
         embeddings.append(average)
         max_dim = max(max_dim, emb.shape)
@@ -142,8 +143,12 @@ def load_dataset_from_file(path):
     target = []
     file = open(input, "r")
     for line in file:
-        data.append(str(line.split("\t")[0]))
-        target.append(int(line.split("\t")[1]))
+        # print("\nline: ",int(line.split("\t")[1]), "\n")
+        s = line.split(";")
+        print("len",len(s))
+        print(s[0])
+        data.append(s[0])
+        target.append(s[1])
     file.close()
     # data = np.array(data)
 
@@ -191,13 +196,13 @@ def save_to_file(dense_dataset, output_path):
 if __name__ == '__main__':
     max_dim = (0,0)
     _input_path = sys.argv[1]
-    methods = ["avg", "clean_avg", "concatenate", "clean_concatenate"]
+    methods = ["avg", "clean_avg"]
 
     # dense_dataset = np.array(from_text_to_embeddings())
     for m in methods:
         embeddings = []
         print("method: ",m)
-        _output_path = "/home/vinicios/reps/hcac/datasets/"+m+"_dilma.data"
+        _output_path = "/home/vinicios/hcac/hcac/datasets/"+m+"_tweet2.data"
         dense_dataset = from_text_to_embeddings(input_path=_input_path,output_path=_output_path, method=m)
         save_to_file(dense_dataset,_output_path)
         dense_dataset = []

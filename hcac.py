@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.metrics.pairwise import cosine_distances
 from scipy.cluster import hierarchy
 from scipy.cluster.hierarchy import dendrogram
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import time
 import math
 

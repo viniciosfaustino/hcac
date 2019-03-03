@@ -11,7 +11,7 @@ from sklearn.metrics.pairwise import cosine_distances
 from scipy.cluster import hierarchy
 from scipy.cluster.hierarchy import dendrogram
 from hcac import HCAC
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import time
 import math
 
