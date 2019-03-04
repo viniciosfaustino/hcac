@@ -1,0 +1,60 @@
+Percentage of intervention: 0
+F-Score: 0.5199557147833009
+F-Score per class: [0.5015674  0.4929972  0.56149733]
+Elapsed time: 1.97 s
+---------------------------------
+Percentage of intervention: 5
+F-Score: 0.5216678221521476
+F-Score per class: [0.48546512 0.4929972  0.58083832]
+Elapsed time: 1.99 s
+---------------------------------
+Percentage of intervention: 10
+F-Score: 0.5647063049593859
+F-Score per class: [0.48571429 0.5258216  0.671875  ]
+Elapsed time: 2.02 s
+---------------------------------
+Percentage of intervention: 20
+F-Score: 0.5148301865264608
+F-Score per class: [0.48305085 0.53658537 0.52328767]
+Elapsed time: 2.1 s
+---------------------------------
+Percentage of intervention: 30
+F-Score: 0.5633562905456044
+F-Score per class: [0.48985507 0.52150538 0.66832918]
+Elapsed time: 2.16 s
+---------------------------------
+Percentage of intervention: 40
+F-Score: 0.5437825385467878
+F-Score per class: [0.48314607 0.49868766 0.6401766 ]
+Elapsed time: 2.79 s
+---------------------------------
+Percentage of intervention: 50
+F-Score: 0.5321412764050215
+F-Score per class: [0.49047619 0.49372385 0.60526316]
+Elapsed time: 2.24 s
+---------------------------------
+Percentage of intervention: 60
+F-Score: 0.5570493333156914
+F-Score per class: [0.48510638 0.49372385 0.68051948]
+Elapsed time: 2.32 s
+---------------------------------
+Percentage of intervention: 70
+F-Score: 0.5440843478410344
+F-Score per class: [0.48914616 0.49372385 0.64022663]
+Elapsed time: 2.35 s
+---------------------------------
+Percentage of intervention: 80
+F-Score: 0.5091821178963829
+F-Score per class: [0.4838256  0.49372385 0.54634146]
+Elapsed time: 2.42 s
+---------------------------------
+Percentage of intervention: 90
+F-Score: 0.5693013583596878
+F-Score per class: [0.59630607 0.4929972  0.61569416]
+Elapsed time: 2.81 s
+---------------------------------
+Percentage of intervention: 100
+F-Score: 0.5371053161366928
+F-Score per class: [0.48314607 0.49162011 0.6278481 ]
+Elapsed time: 2.69 s
+---------------------------------

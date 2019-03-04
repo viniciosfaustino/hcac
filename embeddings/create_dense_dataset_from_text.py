@@ -9,7 +9,7 @@ import re
 import csv
 import pickle
 from nltk.corpus import stopwords
-model = KeyedVectors.load_word2vec_format('skip_s50.txt')
+model = KeyedVectors.load_word2vec_format('skip_s100.txt')
 max_dim = (0,0)
 dense_dataset = []
 #this script should get a dataset which each row is a tuple, with the text and the label and transform it
@@ -18,7 +18,7 @@ dense_dataset = []
 #first step should be load the previous dataset
 #then should be done some preprocessing to get the embeddings of the sentence
 #after getting all the embeddings of the sentences, the arrays should be reshaped with the maximum dimension
-
+emb_dim = 100
 
 #-----------------------------------------------------------
 #the preprocessing step also should split the words
@@ -68,8 +68,8 @@ def get_embeddings_concatenated(sentences, labels=None, max_dim=None, remove_sto
                 # emb.append(model.word_vec(str(w)))
 
             except:
-                #emb.append(np.zeros(50))
-                temp = np.zeros(50)
+                #emb.append(np.zeros(emb_dim))
+                temp = np.zeros(emb_dim)
 
             temp = temp.tolist()
             emb += temp
@@ -94,8 +94,8 @@ def get_embeddings(sentences, labels=None, max_dim=None, remove_stopwords=False)
                 # emb.append(model.word_vec(str(w)))
 
             except:
-                #emb.append(np.zeros(50))
-                temp = np.zeros(50)
+                #emb.append(np.zeros(emb_dim))
+                temp = np.zeros(emb_dim)
 
             emb.append(temp)
         emb = np.array(emb)
@@ -202,7 +202,7 @@ if __name__ == '__main__':
     for m in methods:
         embeddings = []
         print("method: ",m)
-        _output_path = "/home/vinicios/hcac/hcac/datasets/"+m+"_tweet2.data"
+        _output_path = "/home/vinicios/hcac/hcac/datasets/skip_s100/"+m+"_tweet2.data"
         dense_dataset = from_text_to_embeddings(input_path=_input_path,output_path=_output_path, method=m)
         save_to_file(dense_dataset,_output_path)
         dense_dataset = []

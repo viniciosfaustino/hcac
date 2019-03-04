@@ -126,15 +126,17 @@ if __name__ == '__main__':
     # dataset = Dataset(data,target)
     # run_full_test("brasui2", dataset, "cosine")
 
-    file_handler = open("datasets/clean_avg_tweet2.data", "rb")
+    file_handler = open("datasets/skip_s100/avg_tweet2.data", "rb")
     # dataset = np.loadtxt("datasets/avg_tweet2.data")
     dataset = np.array(pickle.load(file_handler))
     data,target = split_data_target(dataset)
-    # print(data)
-    # for i in range(data.shape[0]):
-    #     print(len(data[i][0]),"\n")
-    # for i in range(data.shape[0]):
-    #     print(data[i].shape)
+    dataset = Dataset(data,target)
+    run_full_test("avg_tweet", dataset, "euclidean")
+
+    file_handler = open("datasets/skip_s100/clean_avg_tweet2.data", "rb")
+    # dataset = np.loadtxt("datasets/avg_tweet2.data")
+    dataset = np.array(pickle.load(file_handler))
+    data,target = split_data_target(dataset)
     dataset = Dataset(data,target)
     run_full_test("clean_avg_tweet", dataset, "euclidean")
 #to run the program, execute:
