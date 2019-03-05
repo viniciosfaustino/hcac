@@ -44,88 +44,20 @@ def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean
 
 
 def run_full_test(dataset_name, dataset, distance_function=None):
-    run_test(dataset_name, dataset, 0, distance_function)
-    run_test(dataset_name, dataset, 5, distance_function)
-    run_test(dataset_name, dataset, 10, distance_function)
-    run_test(dataset_name, dataset, 20, distance_function)
-    run_test(dataset_name, dataset, 30, distance_function)
-    run_test(dataset_name, dataset, 40, distance_function)
-    run_test(dataset_name, dataset, 50, distance_function)
-    run_test(dataset_name, dataset, 60, distance_function)
-    run_test(dataset_name, dataset, 70, distance_function)
-    run_test(dataset_name, dataset, 80, distance_function)
-    run_test(dataset_name, dataset, 90, distance_function)
-    run_test(dataset_name, dataset, 100, distance_function)
-
+    percentage = [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    for p in percentage:
+        run_test(dataset_name, dataset, p, distance_function)
 
 if __name__ == '__main__':
-    # dataset = datasets.load_iris()
-    # # print dataset.target.shape
-    # run_full_test("iris", dataset, "euclidean")
-    #
-    # data = np.genfromtxt("datasets/ecoli2.data", delimiter=",")
-    # data = np.delete(data, np.s_[-1], axis=1)
-    # target = np.genfromtxt("datasets/ecoli2.data", delimiter=",", dtype="str")
-    # np.place(target, target=="cp", 0)
-    # np.place(target, target=="im", 1)
-    # np.place(target, target=="pp", 2)
-    # np.place(target, target=="imU", 3)
-    # np.place(target, target=="om", 4)
-    # np.place(target, target=="omL", 5)
-    # np.place(target, target=="imL", 6)
-    # np.place(target, target=="imS", 7)
-    # target = np.delete(target, np.s_[0:7], axis=1)
-    # tar = []
-    # for i in range(target.shape[0]):
-    #     tar.append(int(target[i]))
-    # target = np.array(tar)
-    # dataset = Dataset(data, target)
-    # run_full_test("ecoli2",dataset, "euclidean")
-    #
-    # data = np.genfromtxt("datasets/breast-cancer-wisconsin2.data", delimiter=",")
-    # target = np.array(data[:,-1], dtype=int)
-    # data = np.delete(data, np.s_[-1], axis=1)
-    # target = np.divide(target, 4)
-    # dataset = Dataset(data, target)
-    # run_full_test("bc",dataset, "euclidean")
-    #
-    # data = np.genfromtxt("datasets/ctg_norm.data", delimiter=",")
-    # target = np.array(data[:,-1], dtype=int)
-    # data = np.delete(data, np.s_[-1], axis=1)
-    # target = np.subtract(target, 1)
-    # dataset = Dataset(data, target)
-    # run_full_test("ctg",dataset, "euclidean")
-    #
-    # dataset = np.loadtxt("dilma_redux.data")
-    # data,target = split_data_target(dataset)
-    # dataset = Dataset(data,target)
-    # run_full_test("dilma_redux_old", dataset, "cosine")
-    #
-    # dataset = np.loadtxt("datasets/dilma_balanceado.data")
-    # data,target = split_data_target(dataset)
-    # dataset = Dataset(data,target)
-    # run_full_test("dilma_balanceado", dataset, "cosine")
-    # #
-    # dataset = np.loadtxt("datasets/dilma1.data")
-    # data,target = split_data_target(dataset)
-    # dataset = Dataset(data,target)
-    # run_full_test("dilmas", dataset, "cosine")
-    # # #
-    # dataset = np.loadtxt("datasets/solo.data")
-    # data,target = split_data_target(dataset)
-    # dataset = Dataset(data,target)
-    # run_full_test("solo", dataset, "cosine")
-    #
-    # dataset = np.loadtxt("datasets/solo2.data")
-    # data,target = split_data_target(dataset)
-    # dataset = Dataset(data,target)
-    # run_full_test("solo2", dataset, "cosine")
-    #
-    # dataset = np.loadtxt("datasets/brasui2.data")
-    # data,target = split_data_target(dataset)
-    # dataset = Dataset(data,target)
-    # run_full_test("brasui2", dataset, "cosine")
+    embeddings = ["skip_s50", "skip_s100", "cbow_s50", "cbow_s100"]
+    methods = ["std", "no_stopwords"]
+    dataset =
 
+    datasets = ["eleicao"]
+
+    for embedding in embeddings:
+        for method in methods:
+            file_handler = open("datasets/"+embedding+"_"+method+"_"+dataset+".data")
     file_handler = open("datasets/skip_s100/avg_tweet2.data", "rb")
     # dataset = np.loadtxt("datasets/avg_tweet2.data")
     dataset = np.array(pickle.load(file_handler))
