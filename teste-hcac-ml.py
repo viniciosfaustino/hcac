@@ -8,15 +8,15 @@ from sklearn.metrics.pairwise import euclidean_distances
 from scipy.spatial import distance
 from scipy.cluster.hierarchy import linkage
 import sys
+import os
 import pickle
 from preprocessing import split_data_target
 
 
-def run_test(dataset, name):
+def run_test(path_to_save, dataset, name):
     print(name)
-    file_path = str(sys.argv[1])
-    file = open(file_path+"/"+name+"_results.txt", "w+")
-    file2 = open(file_path+"/"+name+"_results.csv", "w+")
+    file = open(path_to_save+"/"+name+"_results.txt", "w+")
+    file2 = open(path_to_save+"/"+name+"_results.csv", "w+")
     n = dataset.data.shape[0]
     h = ML(int(n*0.3),dataset.data.shape[0], "euclidean", 5, dataset.target)
     A = np.identity(len(dataset.data[0]))
@@ -40,55 +40,44 @@ def run_test(dataset, name):
 
 
 if __name__ == '__main__':
-    # dataset = datasets.load_iris()
-    # run_test(dataset, "iris")
-    # data = np.genfromtxt("datasets/breast-cancer-wisconsin2.data", delimiter=",")
-    # target = np.array(data[:,-1], dtype=int)
-    # data = np.delete(data, np.s_[-1], axis=1)
-    # target = np.divide(target, 4)
-    # dataset = Dataset(data,target)
-    # run_test(dataset, "breast_cancer")
-    #
-    # data = np.genfromtxt("datasets/ctg_norm.data", delimiter=",")
-    # target = np.array(data[:,-1], dtype=int)
-    # data = np.delete(data, np.s_[-1], axis=1)
-    # target = np.subtract(target, 1)
-    # dataset = Dataset(data, target)
-    # run_test(dataset, "ctg")
+    path_to_save = str(sys.argv[1])
+    if path_to_save[-1] == '/':
+        path_to_save = path_to_save[0:-1]
 
-    # data = np.genfromtxt("datasets/ecoli2.data", delimiter=",")
-    # data = np.delete(data, np.s_[-1], axis=1)
-    # print(data)
-    # target = np.genfromtxt("datasets/ecoli2.data", delimiter=",", dtype="str")
-    # np.place(target, target=="cp", 0)
-    # np.place(target, target=="im", 1)
-    # np.place(target, target=="pp", 2)
-    # np.place(target, target=="imU", 3)
-    # np.place(target, target=="om", 4)
-    # np.place(target, target=="omL", 5)
-    # np.place(target, target=="imL", 6)
-    # np.place(target, target=="imS", 7)
-    # target = np.delete(target, np.s_[0:7], axis=1)
-    # tar = []
-    # for i in range(target.shape[0]):
-    #     tar.append(int(target[i]))
-    # target = np.array(tar)
-    # dataset = Dataset(data, target)
-    # run_test(dataset, "ecoli2")
+    embeddings = ["skip_s50", "skip_s100"]
+    methods = ["std", "no_stopwords"]
+    datasets = ["eleicao","dilma"]
+    for d in datasets:
+        try:
+            os.mkdir(os.path.join(path_to_save,d))
+        except:
+            pass
 
-    file_handler = open("datasets/skip_s100/avg_tweet2.data", "rb")
-    # dataset = np.loadtxt("datasets/eleicao_bow.data")
-    dataset = np.array(pickle.load(file_handler))
-    data,target = split_data_target(dataset)
-    print(data.shape)
-    dataset = Dataset(data,target)
-    run_test(dataset, "avg_tweet2")
+        for embedding in embeddings:
+            try:
+                os.mkdir(os.path.join(path_to_save, d, embedding))
+            except:
+                pass
 
-    file_handler = open("datasets/skip_s100/clean_avg_tweet2.data", "rb")
-    # dataset = np.loadtxt("datasets/eleicao_bow.data")
-    dataset = np.array(pickle.load(file_handler))
-    data,target = split_data_target(dataset)
-    print(data.shape)
-    dataset = Dataset(data,target)
-    run_test(dataset, "clean_avg_tweet2")
-    # run_full_test("esolo", dataset, "euclidean")
+            for method in methods:
+                try:
+                    os.mkdir(os.path.join(path_to_save, d, embedding, method))
+                except:
+                    pass
+
+                file_handler = open("datasets/"+embedding+"_"+method+"_"+d+".data", "rb")
+                dataset = np.array(pickle.load(file_handler))
+                data,target = split_data_target(dataset)
+                dataset = Dataset(data,target)
+                new_path = os.path.join(path_to_save, d, embedding, method)
+                run_test(new_path, dataset, d)
+                #
+                #
+                # file_handler = open("datasets/skip_s100/clean_avg_tweet2.data", "rb")
+                # # dataset = np.loadtxt("datasets/eleicao_bow.data")
+                # dataset = np.array(pickle.load(file_handler))
+                # data,target = split_data_target(dataset)
+                # print(data.shape)
+                # dataset = Dataset(data,target)
+                # run_test(dataset, "clean_avg_tweet2")
+                # # run_full_test("esolo", dataset, "euclidean")

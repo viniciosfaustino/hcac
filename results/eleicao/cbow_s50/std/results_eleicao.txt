@@ -1,0 +1,60 @@
+Percentage of intervention: 0
+F-Score: 0.5107551319471377
+F-Score per class: [0.47752809 0.49368864 0.55649241]
+Elapsed time: 2.98 s
+---------------------------------
+Percentage of intervention: 5
+F-Score: 0.5203691728042525
+F-Score per class: [0.47752809 0.49368864 0.58367347]
+Elapsed time: 2.74 s
+---------------------------------
+Percentage of intervention: 10
+F-Score: 0.5041915637688854
+F-Score per class: [0.47752809 0.49430894 0.53736089]
+Elapsed time: 3.14 s
+---------------------------------
+Percentage of intervention: 20
+F-Score: 0.499120602173997
+F-Score per class: [0.47863248 0.49372385 0.52257182]
+Elapsed time: 2.85 s
+---------------------------------
+Percentage of intervention: 30
+F-Score: 0.5083156227743452
+F-Score per class: [0.47887324 0.49839228 0.54402516]
+Elapsed time: 3.29 s
+---------------------------------
+Percentage of intervention: 40
+F-Score: 0.5044088129324977
+F-Score per class: [0.492891   0.49372385 0.52468265]
+Elapsed time: 3.3 s
+---------------------------------
+Percentage of intervention: 50
+F-Score: 0.5028420005186925
+F-Score per class: [0.47875354 0.49438202 0.5323741 ]
+Elapsed time: 3.41 s
+---------------------------------
+Percentage of intervention: 60
+F-Score: 0.4995788362668827
+F-Score per class: [0.47752809 0.49372385 0.52486188]
+Elapsed time: 3.4 s
+---------------------------------
+Percentage of intervention: 70
+F-Score: 0.5009262529181668
+F-Score per class: [0.47752809 0.49372385 0.52867133]
+Elapsed time: 3.72 s
+---------------------------------
+Percentage of intervention: 80
+F-Score: 0.5006303904529064
+F-Score per class: [0.48314607 0.49162011 0.52472527]
+Elapsed time: 3.7 s
+---------------------------------
+Percentage of intervention: 90
+F-Score: 0.49940360268528483
+F-Score per class: [0.48305085 0.49093445 0.52197802]
+Elapsed time: 3.94 s
+---------------------------------
+Percentage of intervention: 100
+F-Score: 0.5005350515697324
+F-Score per class: [0.48314607 0.49365303 0.52257182]
+Elapsed time: 4.09 s
+---------------------------------

@@ -7,20 +7,18 @@ from preprocessing import split_data_target
 import numpy as np
 import sys
 import pickle
-
+import os
 import time
 #to run the program, execute:
 # $python tests.py <path to save the results>
 
 #this file is a structure to use for testing datasets
 
-def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean',method=None):
-    file_path = str(sys.argv[1])
-    if file_path[-1] == '/':
-        file_path = file_path[0:-1]
-    f = open(str(file_path+"/"+dataset_name+str(p_intervention)+".txt"), "w+")
-    saida = open(str(file_path+"/results_"+dataset_name+".txt"), "a")
-    score_file = open(str(file_path+"/fscore_"+dataset_name+".txt"), "a")
+def run_test(results_path, dataset_name, dataset, p_intervention, distance_function='euclidean',method=None):
+    results_path
+    f = open(str(results_path+"/"+dataset_name+str(p_intervention)+".txt"), "w+")
+    saida = open(str(results_path+"/results_"+dataset_name+".txt"), "a")
+    score_file = open(str(results_path+"/fscore_"+dataset_name+".txt"), "a")
     start_time = time.time()
     n_intervention = int(dataset.data.shape[0]/100.0 * float(p_intervention)) - 1
     h = Experiment(n_intervention,dataset.data.shape[0], distance_function, 5, dataset.target)
@@ -34,7 +32,7 @@ def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean
     saida.write(str("Percentage of intervention: "+str(p_intervention))+'\n')
     saida.write(str("F-Score: "+str(score[0]))+'\n')
     print(str(p_intervention)+" "+str(score[0])+"\n")
-    score_file.write(str(p_intervention)+" "+str(score[0])+"\n")
+    score_file.write(str(p_intervention)+","+str(score[0])+"\n")
     saida.write(str("F-Score per class: "+str(score[1]))+'\n')
     elapsed_time = time.time() - start_time
     elapsed_time = round(elapsed_time, 2)
@@ -43,33 +41,44 @@ def run_test(dataset_name, dataset, p_intervention, distance_function='euclidean
     score_file.close()
 
 
-def run_full_test(dataset_name, dataset, distance_function=None):
+def run_full_test(results_path, dataset_name, dataset, distance_function=None):
     percentage = [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
     for p in percentage:
-        run_test(dataset_name, dataset, p, distance_function)
+        run_test(results_path, dataset_name, dataset, p, distance_function)
 
 if __name__ == '__main__':
-    embeddings = ["skip_s50", "skip_s100", "cbow_s50", "cbow_s100"]
-    methods = ["std", "no_stopwords"]
-    dataset =
 
-    datasets = ["eleicao"]
+    path_to_save = str(sys.argv[1])
+    if path_to_save[-1] == '/':
+        path_to_save = path_to_save[0:-1]
 
-    for embedding in embeddings:
-        for method in methods:
-            file_handler = open("datasets/"+embedding+"_"+method+"_"+dataset+".data")
-    file_handler = open("datasets/skip_s100/avg_tweet2.data", "rb")
-    # dataset = np.loadtxt("datasets/avg_tweet2.data")
-    dataset = np.array(pickle.load(file_handler))
-    data,target = split_data_target(dataset)
-    dataset = Dataset(data,target)
-    run_full_test("avg_tweet", dataset, "euclidean")
+    embeddings = ["skip_s50", "skip_s100"]
+    methods = ["std"]
+    datasets = ["dilma"]
+    for d in datasets:
+        try:
+            os.mkdir(os.path.join(path_to_save,d))
+        except:
+            pass
 
-    file_handler = open("datasets/skip_s100/clean_avg_tweet2.data", "rb")
-    # dataset = np.loadtxt("datasets/avg_tweet2.data")
-    dataset = np.array(pickle.load(file_handler))
-    data,target = split_data_target(dataset)
-    dataset = Dataset(data,target)
-    run_full_test("clean_avg_tweet", dataset, "euclidean")
-#to run the program, execute:
-# $python tests.py <path to save the results>
+        for embedding in embeddings:
+            try:
+                os.mkdir(os.path.join(path_to_save, d, embedding))
+            except:
+                pass
+
+            for method in methods:
+                try:
+                    os.mkdir(os.path.join(path_to_save, d, embedding, method))
+                except:
+                    pass
+
+                file_handler = open("datasets/"+embedding+"_"+method+"_"+d+".data", "rb")
+                dataset = np.array(pickle.load(file_handler))
+                data,target = split_data_target(dataset)
+                dataset = Dataset(data,target)
+                new_path = os.path.join(path_to_save, d, embedding, method)
+                run_full_test(new_path, d, dataset, "euclidean")
+
+
+# $python3 tests.py <path to save results>
