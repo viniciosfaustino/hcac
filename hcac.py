@@ -17,18 +17,6 @@ import math
 # np.set_printoptions(threshold=np.nan)
 # np.set_printoptions(suppress=True, linewidth=10000, precision=3)
 
-def normalize_data(data):
-    for i in xrange(data.shape[0]):
-        if np.linalg.norm(data[i]) > 0:
-            data[i] = data[i]/np.linalg.norm(data[i])
-    return data
-
-class Dataset:
-    def __init__(self, data, target):
-        self.data = data
-        self.target = target
-
-
 class HCAC:
 
     def __init__(self, constraints, n, dist_func, pool_size):

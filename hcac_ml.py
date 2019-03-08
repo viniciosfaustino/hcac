@@ -14,24 +14,24 @@ def swap(x,y):
     return x,y
 
 class ML(Experiment):
-    instanceSimilarityDict = {}
-    instanceDissimilarityDict = {}
+    instance_similarity_dict = {}
+    instance_dissimilarity_dict = {}
 
-    clusterSimilarity = []
-    clusterSimilarityDict = {}
-    clusterSimilarityList = []
+    cluster_similarity = []
+    cluster_similarity_dict = {}
+    cluster_similarity_list = []
 
-    clusterDissimilarity = []
-    clusterDissimilarityDict = {}
-    clusterDissimilarityList = []
+    cluster_dissimilarity = []
+    cluster_dissimilarity_dict = {}
+    cluster_dissimilarity_list = []
 
     instances = []
     instancesA = []
     instancesB = []
 
-    upperCluster = {}
-    lowerCluster = {}
-    upperInstance = {}
+    upper_cluster = {}
+    lower_cluster = {}
+    upper_instance = {}
     lowerInstance = {}
 
 
@@ -41,24 +41,24 @@ class ML(Experiment):
         e = {}
         lamb = {}
         cont = 0
-        for pair in self.instanceDissimilarityDict:
-            if self.instanceDissimilarityDict[pair] == 0.0:
+        for pair in self.instance_dissimilarity_dict:
+            if self.instance_dissimilarity_dict[pair] == 0.0:
                 e[pair] = 0.01
             else:
-                e[pair] = float(self.instanceDissimilarityDict[pair])
+                e[pair] = float(self.instance_dissimilarity_dict[pair])
             lamb[pair] = 0.0
-        for pair in self.instanceSimilarityDict:
-            if self.instanceSimilarityDict[pair] == 0.0:
+        for pair in self.instance_similarity_dict:
+            if self.instance_similarity_dict[pair] == 0.0:
                 e[pair] = 0.001
             else:
-                e[pair] = float(self.instanceSimilarityDict[pair])
+                e[pair] = float(self.instance_similarity_dict[pair])
             lamb[pair] = 0.0
 
         cont = 0
         converge = True
         maxIteractions = 0
         while converge:
-            for pair in self.instanceSimilarityDict:
+            for pair in self.instance_similarity_dict:
                 cont +=1
                 delta = -1
                 i,j = pair
@@ -82,7 +82,7 @@ class ML(Experiment):
                 part3 = np.dot(part1, part2)
                 A = np.add(A, np.multiply(beta, part3))
             cont = 0
-            for pair in self.instanceDissimilarityDict:
+            for pair in self.instance_dissimilarity_dict:
                 cont +=1
                 delta = 1
                 i,j = pair
@@ -111,17 +111,17 @@ class ML(Experiment):
         return A
 
 
-    def setClusterSimilarity(self, abs_pool, minEntropy, dist):
+    def set_cluster_similarity(self, abs_pool, minEntropy, dist):
         x,y = abs_pool[minEntropy]
 
         p = swap(x,y)
         if dist == 0.0:
             dist = 0.001
-        self.clusterSimilarityDict[p] = dist
-        self.upperCluster[p] = dist
-        self.clusterSimilarityList.append(p)
+        self.cluster_similarity_dict[p] = dist
+        self.upper_cluster[p] = dist
+        self.cluster_similarity_list.append(p)
 
-    def setClusterDissimilarity(self, entropy, abs_pool, rel_pool):
+    def set_cluster_dissimilarity(self, entropy, abs_pool, rel_pool):
         minEntropy = np.argmin(entropy[:,1])
         dist = self.distance[rel_pool[minEntropy]]
         if dist == 0.0:
@@ -129,25 +129,25 @@ class ML(Experiment):
         for i in range(0, minEntropy):
             x,y = abs_pool[i]
             p = swap(x,y)
-            self.lowerCluster[p] = dist
-            self.clusterDissimilarityDict[p] = dist
+            self.lower_cluster[p] = dist
+            self.cluster_dissimilarity_dict[p] = dist
 
 
-    def getAbsoluteIndex(self,x):
+    def get_absolute_index(self,x):
         n = self.number_of_elements
         if (x >= self.number_of_elements):
             a = self.result_cluster[x - n][0]
             b = self.result_cluster[x - n][1]
-            self.getAbsoluteIndex(a)
-            self.getAbsoluteIndex(b)
+            self.get_absolute_index(a)
+            self.get_absolute_index(b)
         else:
             self.instances.append(x)
 
     def getInstances(self, x, y):
-        self.getAbsoluteIndex(x)
+        self.get_absolute_index(x)
         self.instancesA = np.copy(self.instances)
         self.instances = []
-        self.getAbsoluteIndex(y)
+        self.get_absolute_index(y)
         self.instancesB = np.copy(self.instances)
         self.instances = []
 
@@ -168,14 +168,14 @@ class ML(Experiment):
                     ia,ib = swap(ia,ib)
                     instanceDict[(ia,ib)] = dist
                     if(b == 0):
-                        self.upperInstance[(ia,ib)] = dist
+                        self.upper_instance[(ia,ib)] = dist
                     else:
                         self.lowerInstance[(ia,ib)] = dist
         return instanceDict
 
-    def getInstaceConstraintsFromCluster(self):
-        self.instanceSimilarityDict = dict(self.getConstraintsFromCluster(self.clusterSimilarityDict, 0))
-        self.instanceDissimilarityDict = dict(self.getConstraintsFromCluster(self.clusterDissimilarityDict, 1))
+    def get_instace_constraints_from_cluster(self):
+        self.instance_similarity_dict = dict(self.getConstraintsFromCluster(self.cluster_similarity_dict, 0))
+        self.instance_dissimilarity_dict = dict(self.getConstraintsFromCluster(self.cluster_dissimilarity_dict, 1))
 
     def query_pool(self, a, b, current_cluster):
         #current_cluster is a list that keeps the correspondent cluster label of the position.
@@ -213,11 +213,11 @@ class ML(Experiment):
 
         entropy = np.array(entropy)
 
-        self.setClusterDissimilarity(entropy, abs_pool, rel_pool) #insert the dissimilarity clusters
+        self.set_cluster_dissimilarity(entropy, abs_pool, rel_pool) #insert the dissimilarity clusters
         k = np.argsort(entropy[:,1])
         entropy = entropy[k]
         minEntropy = np.argmin(entropy[:,1])
-        self.setClusterSimilarity(abs_pool, minEntropy, self.distance[a][b]) #inser the similarity clusters
+        self.set_cluster_similarity(abs_pool, minEntropy, self.distance[a][b]) #inser the similarity clusters
 
         if entropy[0][1] == 0.0:
             choice = a,b

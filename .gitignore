@@ -1,7 +1,5 @@
 *.pyc
-embeddings/*s50.txt
 datasets/Dilma*
 datasets/edilma*
 datasets/soloteste.csv
-embeddings/dataset.data
 embeddings/*.txt

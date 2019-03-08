@@ -9,9 +9,9 @@ from scipy.spatial import distance
 from scipy.cluster.hierarchy import linkage
 
 from experiment import Experiment
-from hcac import Dataset
-from hcac import normalize_data
-from preprocessing import split_data_target
+from utils import Dataset
+from utils import normalize_data
+from utils import split_data_target
 import collections
 
 def run_test(input, dataset_name, file_path, distance_function=None):
@@ -28,7 +28,7 @@ def run_test(input, dataset_name, file_path, distance_function=None):
     print "semi-supervised clustering finished"
     print h.f_score()
     print "getting instances constraints from cluster"
-    h.getInstaceConstraintsFromCluster()
+    h.get_instace_constraints_from_cluster()
     print "done with constraints"
     X = dataset.data
     A = np.identity(len(dataset.data[0]))

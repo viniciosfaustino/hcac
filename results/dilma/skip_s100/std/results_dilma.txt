@@ -1,0 +1,5 @@
+Percentage of intervention: 0
+F-Score: 0.667542443318575
+F-Score per class: [0.67075558 0.66432931]
+Elapsed time: 1012.43 s
+---------------------------------
