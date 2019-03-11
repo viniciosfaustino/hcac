@@ -47,7 +47,6 @@ def load_dataset(dataset):
     labels = dataset[1]
     return sentences, labels
 
-
 #-------------------------------------------------------------
 #this function should get the embedding of the sentences
 def get_embeddings_concatenated(sentences, labels=None, remove_stopwords=False):
@@ -152,4 +151,3 @@ if __name__ == '__main__':
             _output_path = "/home/vinicios/hcac/hcac/datasets/"+pe+"_"+method+"_"+dataset_name+".data"
             dense_dataset = from_text_to_embeddings(input_path=_input_path,output_path=_output_path, method=method)
             save_to_file(dense_dataset,_output_path)
-dense_dataset = []
