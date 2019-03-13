@@ -6,7 +6,6 @@ def split_data_target(data):
     target = np.array(data[:,-1], dtype=int)
     data = np.delete(data, np.s_[-1], axis=1)
     data = np.array(data, dtype=float)
-    print(data)
     return data, target
 
 #this function normalizes the values of the data array

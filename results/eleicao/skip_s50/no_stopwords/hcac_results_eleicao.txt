@@ -1,0 +1,60 @@
+Percentage of intervention: 0
+F-Score: 0.5402732598977775
+F-Score per class: [0.48553055 0.49372385 0.63270777]
+Elapsed time: 1.54 s
+---------------------------------
+Percentage of intervention: 5
+F-Score: 0.534489780708037
+F-Score per class: [0.48946515 0.49372385 0.61281337]
+Elapsed time: 1.51 s
+---------------------------------
+Percentage of intervention: 10
+F-Score: 0.5801753432018791
+F-Score per class: [0.56763926 0.49570201 0.66974596]
+Elapsed time: 1.55 s
+---------------------------------
+Percentage of intervention: 20
+F-Score: 0.5624479852876592
+F-Score per class: [0.5083612  0.49147727 0.67692308]
+Elapsed time: 1.59 s
+---------------------------------
+Percentage of intervention: 30
+F-Score: 0.5660724661343925
+F-Score per class: [0.5177305  0.49147727 0.67873303]
+Elapsed time: 1.64 s
+---------------------------------
+Percentage of intervention: 40
+F-Score: 0.5186137753670602
+F-Score per class: [0.48364154 0.49093445 0.57575758]
+Elapsed time: 1.7 s
+---------------------------------
+Percentage of intervention: 50
+F-Score: 0.500061481553655
+F-Score per class: [0.4815864  0.49372385 0.52257182]
+Elapsed time: 1.74 s
+---------------------------------
+Percentage of intervention: 60
+F-Score: 0.5576439512863275
+F-Score per class: [0.48948949 0.49162011 0.68020305]
+Elapsed time: 1.77 s
+---------------------------------
+Percentage of intervention: 70
+F-Score: 0.5269857741536185
+F-Score per class: [0.48433048 0.49689441 0.59328358]
+Elapsed time: 1.84 s
+---------------------------------
+Percentage of intervention: 80
+F-Score: 0.5315794897909695
+F-Score per class: [0.48101266 0.50316456 0.60344828]
+Elapsed time: 1.92 s
+---------------------------------
+Percentage of intervention: 90
+F-Score: 0.5146584764719898
+F-Score per class: [0.485623   0.49093445 0.5627907 ]
+Elapsed time: 1.92 s
+---------------------------------
+Percentage of intervention: 100
+F-Score: 0.5081762327303757
+F-Score per class: [0.48169014 0.49157303 0.54741379]
+Elapsed time: 1.98 s
+---------------------------------

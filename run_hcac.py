@@ -17,8 +17,8 @@ import time
 def run_test(results_path, dataset_name, dataset, p_intervention, distance_function='euclidean',method=None):
     results_path
     f = open(str(results_path+"/"+dataset_name+str(p_intervention)+".txt"), "w+")
-    saida = open(str(results_path+"/hcac_results_"+dataset_name+".csv"), "a")
-    score_file = open(str(results_path+"/hcac_fscore_"+dataset_name+".txt"), "a")
+    saida = open(str(results_path+"/hcac_results_"+dataset_name+".txt"), "a")
+    score_file = open(str(results_path+"/hcac_fscore_"+dataset_name+".csv"), "a")
     start_time = time.time()
     n_intervention = int(dataset.data.shape[0]/100.0 * float(p_intervention)) - 1
     h = Experiment(n_intervention,dataset.data.shape[0], distance_function, 5, dataset.target)
@@ -53,8 +53,8 @@ if __name__ == '__main__':
         path_to_save = path_to_save[0:-1]
 
     embeddings = ["skip_s50", "skip_s100"]
-    methods = ["std"]
-    datasets = ["dilma"]
+    methods = ["std", "no_stopwords"]
+    datasets = ["eleicao"]
     for d in datasets:
         try:
             os.mkdir(os.path.join(path_to_save,d))

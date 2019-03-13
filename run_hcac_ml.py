@@ -15,8 +15,8 @@ from utils import split_data_target
 
 def run_test(path_to_save, dataset, name):
     print(name)
-    file = open(path_to_save+"/"+name+"_results.txt", "w+")
-    file2 = open(path_to_save+"/"+name+"_results.csv", "w+")
+    file = open(path_to_save+"/hcac_ml_fscore_"+name+".txt", "w+")
+    file2 = open(path_to_save+"/hcac_ml_fscore_"+name+".csv", "w+")
     n = dataset.data.shape[0]
     h = ML(int(n*0.3),dataset.data.shape[0], "euclidean", 5, dataset.target)
     A = np.identity(len(dataset.data[0]))
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
     embeddings = ["skip_s50", "skip_s100"]
     methods = ["std", "no_stopwords"]
-    datasets = ["eleicao","dilma"]
+    datasets = ["eleicao"]
     for d in datasets:
         try:
             os.mkdir(os.path.join(path_to_save,d))
