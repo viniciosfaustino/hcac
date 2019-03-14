@@ -21,7 +21,7 @@ def preprocessing(data):
 def text_to_bow():
     #this function will get the text file, makes the preprocessing and return a numpy array with the bag of words
     divisor = 1
-    if (sys.argc < 2):
+    if (len(sys.argv) < 2):
         print("ERROR: No input file! \n Usage: python3 create_bow_dataset_from_text.py <text dataset file> ")
         exit(1)
     input = sys.argv[1]

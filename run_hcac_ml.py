@@ -41,8 +41,9 @@ if __name__ == '__main__':
     if path_to_save[-1] == '/':
         path_to_save = path_to_save[0:-1]
 
-    embeddings = ["skip_s50", "skip_s100"]
-    methods = ["std", "no_stopwords"]
+    # embeddings = ["skip_s50", "skip_s100"]
+    embeddings = ["bow"]
+    methods = ["no_stopwords"]
     datasets = ["eleicao"]
     for d in datasets:
         try:
@@ -62,8 +63,10 @@ if __name__ == '__main__':
                 except:
                     pass
 
-                file_handler = open("datasets/"+embedding+"_"+method+"_"+d+".data", "rb")
-                dataset = np.array(pickle.load(file_handler))
+                # file_handler = open("datasets/"+embedding+"_"+method+"_"+d+".data", "rb")
+                # dataset = np.array(pickle.load(file_handler))
+
+                dataset = np.loadtxt("datasets/"+embedding+"_"+method+"_"+d+".data")
                 data,target = split_data_target(dataset)
                 dataset = Dataset(data,target)
                 new_path = os.path.join(path_to_save, d, embedding, method)
