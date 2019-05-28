@@ -3,12 +3,12 @@ from dataset_module import Dataset
 from cluster_module import Cluster
 from sklearn.metrics.pairwise import euclidean_distances, cosine_distances
 from scipy.cluster.hierarchy import linkage
-from operator import itemgetter
+
 
 class HCAC():
-    def __init__(self, _pool_size:int, _max_user_intervention:int, _dataset:Dataset,
-                 _distance_function:str="euclidean", _linkage_method:str='average',
-                 _is_validation:bool=True):
+    def __init__(self, _pool_size: int, _max_user_intervention: int, _dataset: Dataset,
+                 _distance_function: str = "euclidean", _linkage_method: str = 'average',
+                 _is_validation: bool = True):
 
         self.pool_size = _pool_size
         self.max_user_intervention = _max_user_intervention
@@ -31,12 +31,12 @@ class HCAC():
         else:
             distance = euclidean_distances(self.dataset.data)
 
-        np.fill_diagonal(distance,np.inf)
+        np.fill_diagonal(distance, np.inf)
         self.distance_matrix = distance
 
-    def get_confidence(self):
+    def get_confidence(self) -> list[float]:
         cluster = linkage(self.distance_matrix, method=self.linkage_method, metric=self.distance_function)
-        merge_distances = cluster[:,2]
+        merge_distances = cluster[:, 2]
         confidence = sorted(merge_distances)
         return confidence
 
@@ -44,14 +44,14 @@ class HCAC():
         for i in range(self.distance_matrix.shape[0]):
             self.distance_matrix[i][index_a] = (self.distance_matrix[i][index_a] + self.distance_matrix[i][index_b])/2.0
             self.distance_matrix[index_a][i] = self.distance_matrix[i][index_a]
-        self.distance_matrix = np.delete(self.distance_matrix, index_b)
+        self.distance_matrix = np.delete(self.distance_matrix, index_b, axis=0)
+        self.distance_matrix = np.delete(self.distance_matrix, index_b, axis=1)
 
-
-    def get_threshold(self):
+    def get_threshold(self) -> float:
         if self.max_user_intervention > 2:
-            return
-        return self.confidence_array[self.max_user_intervention-2]
-        return float
+            return self.confidence_array[self.max_user_intervention-2]
+        else:
+            return self.confidence_array[0]
 
     def do_clustering(self):
         pass
