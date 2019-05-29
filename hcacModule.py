@@ -1,6 +1,6 @@
 import numpy as np
-from dataset_module import Dataset
-from cluster_module import Cluster
+from datasetModule import Dataset
+from clusterModule import Cluster
 from sklearn.metrics.pairwise import euclidean_distances, cosine_distances
 from scipy.cluster.hierarchy import linkage
 
@@ -12,6 +12,7 @@ class HCAC():
 
         self.pool_size = _pool_size
         self.max_user_intervention = _max_user_intervention
+        self.intervention_counter = 0
         self.dataset = _dataset
         self.distance_function = _distance_function
         self.linkage_method = _linkage_method
@@ -24,7 +25,7 @@ class HCAC():
         self.threshold = self.get_threshold()
         self.distance_matrix = None
         self.set_distance_matrix()
-
+        self.alias = np.arange(self.dataset.size)
 
     def set_distance_matrix(self):
         if self.distance_function == 'cosine':
@@ -48,31 +49,35 @@ class HCAC():
             return self.confidence_array[0]
 
     def do_clustering(self):
+        count = 1
         while self.distance_matrix.shape[0] > 2:
-            index_merge = self.get_pair_to_merge()
-            number_of_elements = self.cluster.get_entry_size(index_merge)
-            self.cluster.add_entry(index_merge[0], index_merge[1], self.distance_matrix[index_merge], 0)
-        pass
-
+            index = self.get_pair_to_merge
+            number_of_elements = self.cluster.get_new_entry_size(index)
+            self.cluster.add_entry(index[0], index[1], self.distance_matrix[index], number_of_elements)
+            self.alias[index[0]] += count
+            self.alias = np.delete(self.alias, index[1])
+            count += 1
+            self.update_distance_matrix(index[0], index[1])
+        self.cluster.add_entry(0, 1, self.distance_matrix[0][1], self.dataset.size)
 
     def get_pair_to_merge(self) -> tuple:
-        min_dist_index = np.argmin(self.distance_matrix)
-        min_dist_index = np.unravel_index(min_dist_index, self.distance_matrix.shape)
+        index = np.argmin(self.distance_matrix)
+        min_dist_index = np.unravel_index(index, self.distance_matrix.shape)
+        merge_confidence = self.get_merge_confidence(min_dist_index)
+        if merge_confidence < self.threshold and self.intervention_counter < self.max_user_intervention:
+            pool = self.create_pool(min_dist_index)
+            if self.is_validation:
+                entropy = self.select_merge(pool)
 
-        if self.get_merge_confidence(min_dist_index) < self.threshold:
-            pass
-        else:
-            pass
-        return min_dist_index
+        return min(min_dist_index), max(min_dist_index)
 
     def get_merge_confidence(self, index: tuple) -> float:
         min_dist = self.distance_matrix[index]
-        aux_vec = np.delete(self.distance_matrix[index[0]], index[0])
-        aux_dist = [np.amin(aux_vec)]
-        aux_vec = np.delete(self.distance_matrix[index[1]], index[1])
-        aux_dist.append(np.amin(aux_vec))
-        return min(aux_vec) - min_dist
-
+        row = np.delete(self.distance_matrix[index[0]], index[0])
+        aux_dist = [np.amin(row)]
+        row = np.delete(self.distance_matrix[index[1]], index[1])
+        aux_dist.append(np.amin(row))
+        return min(row) - min_dist
 
     def update_distance_matrix(self, index_a: int, index_b: int):
         for i in range(self.distance_matrix.shape[0]):
@@ -81,8 +86,25 @@ class HCAC():
         self.distance_matrix = np.delete(self.distance_matrix, index_b, axis=0)
         self.distance_matrix = np.delete(self.distance_matrix, index_b, axis=1)
 
-    def create_pool(self, index:int):
-        return list
+    def create_pool(self, index: tuple):
+        row_a = np.array(self.distance_matrix[index[0]], copy=True)
+        row_a[index[0]] = np.inf
+        row_b = np.array(self.distance_matrix[index[1]], copy=True)
+        row_b[index[1]] = np.inf
+
+        row = np.append(row_b, [row_a])
+        sorted_index = np.argsort(row)
+
+        pool = []
+        size = min(row_a.shape[0], self.pool_size)
+
+        for i in range(size):
+            if (sorted_index[i] - sorted_index.shape[0]) >= 0:
+                pool.append([index[1], sorted_index[i] - sorted_index.shape[0]])
+            else:
+                pool.append([index[0], sorted_index[i]])
+
+        return pool
 
     def get_entropy(self):
         return list
