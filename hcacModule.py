@@ -49,14 +49,18 @@ class HCAC():
             return self.confidence_array[0]
 
     def do_clustering(self):
-        count = 1
+        count = self.dataset.size
         while self.distance_matrix.shape[0] > 2:
-            index = self.get_pair_to_merge
+            index = self.get_pair_to_merge()
             number_of_elements = self.cluster.get_new_entry_size(index)
-            self.cluster.add_entry(index[0], index[1], self.distance_matrix[index], number_of_elements)
-            self.alias[index[0]] += count
+            cluster_number = (self.alias[index[0]], self.alias[index[1]])
+
+            self.cluster.add_entry(cluster_number[0], cluster_number[1], self.distance_matrix[index], number_of_elements)
+
+            self.alias[index[0]] = count
             self.alias = np.delete(self.alias, index[1])
             count += 1
+
             self.update_distance_matrix(index[0], index[1])
         self.cluster.add_entry(0, 1, self.distance_matrix[0][1], self.dataset.size)
 
