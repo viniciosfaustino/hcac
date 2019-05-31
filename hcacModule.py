@@ -3,6 +3,7 @@ from datasetModule import Dataset
 from clusterModule import Cluster
 from sklearn.metrics.pairwise import euclidean_distances, cosine_distances
 from scipy.cluster.hierarchy import linkage
+from math import log
 
 
 class HCAC():
@@ -19,6 +20,8 @@ class HCAC():
         self.is_validation = _is_validation
 
         self.cluster = Cluster(self.dataset.size)
+        if self.is_validation:
+            self.cluster.start_class_counter(self.dataset.number_of_classes)
 
         self.confidence_array = []
         self.confidence_array = self.get_confidence_array()
@@ -56,6 +59,7 @@ class HCAC():
             cluster_number = (self.alias[index[0]], self.alias[index[1]])
 
             self.cluster.add_entry(cluster_number[0], cluster_number[1], self.distance_matrix[index], number_of_elements)
+            self.cluster.update_class_counter(count-self.dataset.size, index)
 
             self.alias[index[0]] = count
             self.alias = np.delete(self.alias, index[1])
@@ -71,7 +75,10 @@ class HCAC():
         if merge_confidence < self.threshold and self.intervention_counter < self.max_user_intervention:
             pool = self.create_pool(min_dist_index)
             if self.is_validation:
-                entropy = self.select_merge(pool)
+                min_dist_index = self.select_merge(pool)
+            else:
+                #aqui vai uma função de exibir para o usuário quais o pool
+                pass
 
         return min(min_dist_index), max(min_dist_index)
 
@@ -110,9 +117,42 @@ class HCAC():
 
         return pool
 
-    def get_entropy(self):
-        return list
+    def get_entropy(self, index: tuple):
+        elements_per_class = self.cluster.classes_per_cluster[index[0]] + self.cluster.classes_per_cluster[index[1]]
+        total_elements = np.sum(elements_per_class)
+        base = self.dataset.number_of_classes
+        e = 0
+        for i in range(base):
+            p = elements_per_class[i]/total_elements
+            e -= p * log(p, base)
+        return e
 
-    def select_merge(self, pool:list):
-        return int
+    def select_merge(self, pool: list) -> int:
+        entropy = [self.get_entropy(pool[i]) for i in range(len(pool))]
+
+        return entropy.index(min(entropy))
+
+    def get_fscore(self):
+        if not self.is_validation:
+            raise Exception("The dataset has no label")
+        else:
+            f_max = [0 for i in range(self.dataset.number_of_classes)]
+            for i in range(self.dataset.size):
+                c_size = np.sum(self.cluster.classes_per_cluster[i])
+                for j in range(self.dataset.number_of_classes):
+                    k_size = np.sum(self.cluster.classes_per_cluster[:,j])
+                    n = self.cluster.classes_per_cluster[i][j]
+                    r = n/k_size
+                    p = n/c_size
+                    if r + p > 0:
+                        f = (2*r*p)/(r+p)
+                    else:
+                        f = 0
+                    if f > f_max[j]:
+                        f_max[j] = f
+            score = 0
+            for i in range(self.dataset.number_of_classes):
+                score += f_max[i]*np.sum(self.cluster.classes_per_cluster[:,i])/self.dataset.size
+            return score
+
 
