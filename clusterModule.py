@@ -18,12 +18,7 @@ class Cluster():
     def add_entry(self, index: tuple, distance: float, number_of_elements: int):
         self.entries.append([index[0], index[1], distance, number_of_elements])
 
-    def update_class_counter(self, pos: int, index: tuple, label: list):
-        for i in range(2):
-            if index[i] < self.max_entries:
-                self.classes_per_cluster[pos][label[index[i]]] += 1
-            else:
-                self.classes_per_cluster[pos] += self.classes_per_cluster[index[i] - self.max_entries]
+
 
     def get_class_from_cluster(self):
         return int

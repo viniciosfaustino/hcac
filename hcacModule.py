@@ -30,6 +30,7 @@ class HCAC():
         self.threshold = self.get_threshold()
 
         self.alias = np.arange(self.dataset.size)
+        self.current_id = [i for i in range(self.dataset.size)]
 
     def set_distance_matrix(self):
         if self.distance_function == 'cosine':
@@ -69,10 +70,10 @@ class HCAC():
             cluster_number = (self.alias[index[0]], self.alias[index[1]])
 
             self.cluster.add_entry(cluster_number, self.distance_matrix[index], number_of_elements)
-            alt_index = self.alias[index[0]], self.alias[index[1]]
+            # alt_index = self.alias[index[0]], self.alias[index[1]]
 
-            self.cluster.update_class_counter(count - self.dataset.size, alt_index, self.dataset.label)
-
+            self.update_class_counter(count - self.dataset.size, index)
+            self.current_id = np.delete(self.current_id, index[1])
             # print("a",self.alias[index[0]])
             self.alias[index[0]] = count
             # print("b", self.alias[index[0]])
@@ -84,8 +85,9 @@ class HCAC():
 
         cluster_number = (self.alias[0], self.alias[1])
         self.cluster.add_entry(cluster_number, self.distance_matrix[0][1], self.dataset.size)
-        alt_index = self.alias[0], self.alias[1]
-        self.cluster.update_class_counter(count - self.dataset.size, alt_index, self.dataset.label)
+        index = (0, 1)
+        self.update_class_counter(count - self.dataset.size, index)
+
 
     def get_pair_to_merge(self) -> tuple:
         index = np.argmin(self.distance_matrix)
@@ -160,11 +162,11 @@ class HCAC():
     def get_entropy(self, index: tuple):
         elements_per_class = self.cluster.classes_per_cluster[index[0]] + self.cluster.classes_per_cluster[index[1]]
 
-        if np.all(elements_per_class, 0.):
-            elements_per_class[self.dataset.label[index[0]]] += 1
-            elements_per_class[self.dataset.label[index[1]]] += 1
+        if np.all(elements_per_class == 0):
+            pos = self.current_id[index[0]], self.current_id[index[1]]
+            elements_per_class[self.dataset.label[pos[0]]] += 1
+            elements_per_class[self.dataset.label[pos[1]]] += 1
         total_elements = np.sum(elements_per_class)
-        self.macaco = total_elements
         base = self.dataset.number_of_classes
         e = 0
         for i in range(base):
@@ -178,6 +180,21 @@ class HCAC():
 
         return entropy.index(min(entropy))
 
+    def update_class_counter(self, pos: int, index: tuple):
+        # print("cid",self.current_id)
+        # print("alias",self.alias)
+        # print("pos", pos)
+        # print("index",index)
+        # print('a', self.cluster.classes_per_cluster)
+        for i in range(2):
+            if self.alias[index[i]] < self.cluster.max_entries:
+                j = self.current_id[index[i]]
+                self.cluster.classes_per_cluster[pos][self.dataset.label[j]] += 1
+            else:
+                # print('oe')
+                self.cluster.classes_per_cluster[pos] += self.cluster.classes_per_cluster[self.alias[index[i]] - self.dataset.size]
+        # print('b', self.cluster.classes_per_cluster)
+        # print()
     def get_fscore(self):
         if not self.is_validation:
             raise Exception("The dataset has no label")

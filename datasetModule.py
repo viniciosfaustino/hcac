@@ -11,7 +11,7 @@ class Dataset():
         if self.label is not None:
             self.number_of_classes = len(set(self.label))
 
-        # self.normalize_data()
+        self.normalize_data()
 
     def normalize_data(self):
         self.data = normalize(self.data)
