@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.preprocessing import normalize
 
 
 class Dataset():
@@ -8,5 +9,9 @@ class Dataset():
         self.name = _name
         self.size = self.data.shape[0]
         if self.label is not None:
-            self.number_of_classes = len(self.label)
+            self.number_of_classes = len(set(self.label))
 
+        # self.normalize_data()
+
+    def normalize_data(self):
+        self.data = normalize(self.data)
