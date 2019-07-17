@@ -6,7 +6,7 @@ from scipy.cluster.hierarchy import linkage
 from math import log
 
 
-class HCAC():
+class HCAC:
     def __init__(self, _dataset: Dataset, _pool_size: int, _max_user_intervention: int,
                  _distance_function: str = "euclidean", _linkage_method: str = 'weighted',
                  _is_validation: bool = True):
@@ -23,13 +23,16 @@ class HCAC():
 
         self.cluster = Cluster(self.dataset.size)
         if self.is_validation:
-            self.cluster.start_class_counter(self.dataset.number_of_classes, self.dataset.label)
+            self.cluster.init_class_counter(self.dataset.number_of_classes, self.dataset.label)
 
         self.confidence_array = []
         self.confidence_array = self.get_confidence_array()
         self.threshold = self.get_threshold()
 
-        self.alias = np.arange(self.dataset.size)
+        self.alias = np.arange(self.dataset.size) #current cluster id
+
+        self.cluster_similarity = {}
+        self.cluster_dissimilarity = {}
 
     def set_distance_matrix(self):
         if self.distance_function == 'cosine':
@@ -175,33 +178,60 @@ class HCAC():
 
     def select_merge(self, pool: list) -> int:
         entropy = [self.get_entropy(pool[i]) for i in range(len(pool))]
+        selected = entropy.index(min(entropy))
+
+        self.set_cluster_dissimilarity(pool, selected)
+        self.set_cluster_similarity(pool, selected)
 
         return entropy.index(min(entropy))
 
-    def get_fscore(self):
-        if not self.is_validation:
-            raise Exception("The dataset has no label")
-        else:
+    # def get_fscore(self):
+    #     if not self.is_validation:
+    #         raise Exception("The dataset has no label")
+    #     else:
+    #
+    #         f_max = [0 for i in range(self.dataset.number_of_classes)]
+    #         for i in range(self.dataset.size):
+    #             c_size = np.sum(self.cluster.classes_per_cluster[i])
+    #             for j in range(self.dataset.number_of_classes):
+    #                 f = 0
+    #                 k_size = self.cluster.classes_per_cluster[self.dataset.size-2][j]
+    #                 n = self.cluster.classes_per_cluster[i][j]
+    #                 if k_size > 0 and c_size > 0:
+    #                     r = n/k_size
+    #                     p = n/c_size
+    #                     if r + p > 0:
+    #                         f = (2*r*p)/(r+p)
+    #                 else:
+    #                     f = 0
+    #                 if f > f_max[j]:
+    #                     f_max[j] = f
+    #         score = 0
+    #         for i in range(self.dataset.number_of_classes):
+    #             score += f_max[i]*self.cluster.classes_per_cluster[self.dataset.size-2][i]/self.dataset.size
+    #         return score
 
-            f_max = [0 for i in range(self.dataset.number_of_classes)]
-            for i in range(self.dataset.size):
-                c_size = np.sum(self.cluster.classes_per_cluster[i])
-                for j in range(self.dataset.number_of_classes):
-                    f = 0
-                    k_size = self.cluster.classes_per_cluster[self.dataset.size-2][j]
-                    n = self.cluster.classes_per_cluster[i][j]
-                    if k_size > 0 and c_size > 0:
-                        r = n/k_size
-                        p = n/c_size
-                        if r + p > 0:
-                            f = (2*r*p)/(r+p)
-                    else:
-                        f = 0
-                    if f > f_max[j]:
-                        f_max[j] = f
-            score = 0
-            for i in range(self.dataset.number_of_classes):
-                score += f_max[i]*self.cluster.classes_per_cluster[self.dataset.size-2][i]/self.dataset.size
-            return score
+    def set_cluster_similarity(self, pool, selected):
+        dist = [self.distance_matrix[pair] for pair in pool]
+        min_dist = min(dist)
+        alias = self.alias[selected[0]], self.alias[selected[1]]
+        self.cluster_similarity[alias] = min_dist
+
+    def set_cluster_dissimilarity(self, pool, selected):
+        dist = [self.distance_matrix[pair] for pair in pool]
+        max_dist = max(dist)
+        not_selected = pool.remove(selected)
+        for pair in not_selected:
+            alias = self.alias[pair[0]], self.alias[pair[1]]
+            self.cluster_dissimilarity[alias] = max_dist
+
+
+    # def add_to_must_link(self, clusters: tuple):
+    #     aliases = self.alias[clusters[0]], self.alias[clusters[1]]
+    #     self.must_link_clusters.append(aliases)
+    #
+    # def add_to_cannot_link(self, clusters: tuple):
+    #     aliases = self.alias[clusters[0]], self.alias[clusters[1]]
+    #     self.cannot_link_clusters.append(aliases)
 
 
