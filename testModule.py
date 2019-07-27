@@ -2,13 +2,15 @@ import numpy as np
 from hcacModule import HCAC
 from datasetModule import Dataset
 from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.preprocessing import normalize
 
 syntetic_data = [[1, 2], [2, 2], [2, 6], [4, 4], [4, 5], [6, 3], [6, 4]]
 syntetic_data = [[1, 1], [1, 3], [1, 7], [1, 9], [1, 10]]
+syntetic_data2 = normalize(np.array(syntetic_data))
 syntetic_data = np.array(syntetic_data)
 print(syntetic_data)
 label = [0, 0, 1, 2, 2]
-exp_dist = euclidean_distances(syntetic_data)
+exp_dist = euclidean_distances(syntetic_data2)
 np.fill_diagonal(exp_dist, np.inf)
 exp_conf = [1.0, 2.0, 2.5]
 pool = [(2, 3), (2, 4), (3, 4)]
@@ -20,7 +22,7 @@ hcac = HCAC(dataset, pool_size, user_intervention)
 
 
 def test_set_distace_matrix():
-    print(syntetic_data)
+    print(exp_dist - hcac.distance_matrix)
     assert np.array_equal(exp_dist, hcac.distance_matrix)
 
 
@@ -37,7 +39,7 @@ def test_get_entropy():
     assert hcac.get_entropy(index) == 0.0
     index = (1, 2)
     print(hcac.get_entropy(index))
-    print(hcac.macaco)
+    # print(hcac.macaco)
     assert hcac.get_entropy(index) != 0
 
 
