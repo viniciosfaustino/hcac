@@ -42,8 +42,40 @@ class ML:
         self.cluster.entries = mahalanobis_hierarchy
         self.cluster.get_class_counter_from_cluster()
 
-    def get_instance_constraints_from_cluster(self, cluster: list):
-        pass
+    def get_instance_constraints_from_cluster(self, cluster: list, cluster_similarity, cluster_dissimilarity):
+        for pair in cluster_similarity.keys():
+            a, b = pair
+            a_instances = self.get_cluster_instances(a)
+            b_instances = self.get_cluster_instances(b)
 
+            for i in a_instances:
+                for j in b_instances:
+                    if i != j:
+                        self.instance_similarity[(i,j)] = cluster_similarity[pair]
+
+        for pair in cluster_dissimilarity.keys():
+            a, b = pair
+            a_instances = self.get_cluster_instances(a)
+            b_instances = self.get_cluster_instances(b)
+
+            for i in a_instances:
+                for j in b_instances:
+                    if i != j:
+                        self.instance_dissimilarity[(min(i,j), max(i,j))] = cluster_dissimilarity[pair]
+
+    def get_cluster_instances(self, x):
+        instances = []
+        stck = []
+        stck.insert(0, x)
+        while stck:
+            x = int(stck.pop())
+            if x >= self.dataset.size:
+                pos = x - self.dataset.size
+                stck.insert(0, self.cluster.entries[pos][1])
+                stck.insert(0, self.cluster.entries[pos][0])
+            else:
+                instances.append(x)
+
+        return instances
 
 
