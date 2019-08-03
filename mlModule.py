@@ -37,36 +37,31 @@ class ML:
         mitml = MITML()
         mahalanobis = mitml.run()
         mahalanobis_distance_matrix = distance.pdist(self.data, 'mahalanobis', VI=mahalanobis)
-        mahalanobis_hierarchy = linkage(mahalanobis_distance_matrix, method = self.linkage_method, metric = self.distance_function)
+        mahalanobis_hierarchy = linkage(mahalanobis_distance_matrix, method=self.linkage_method, \
+                                        metric=self.distance_function)
 
         self.cluster.entries = mahalanobis_hierarchy
         self.cluster.get_class_counter_from_cluster()
 
-    def get_instance_constraints_from_cluster(self, cluster: list, cluster_similarity, cluster_dissimilarity):
-        for pair in cluster_similarity.keys():
+    def get_all_instance_constraints_from_cluster(self, cluster: list, cluster_similarity, cluster_dissimilarity):
+        self.instance_similarity = self.get_instance_constraints_from_cluster(cluster_similarity)
+        self.instance_dissimilarity = self.get_instance_constraints_from_cluster(cluster_dissimilarity)
+
+    def get_instance_constraints_from_cluster(self, cluster: dict):
+        instances = {}
+        for pair in cluster.keys():
             a, b = pair
             a_instances = self.get_cluster_instances(a)
             b_instances = self.get_cluster_instances(b)
-
             for i in a_instances:
                 for j in b_instances:
                     if i != j:
-                        self.instance_similarity[(i,j)] = cluster_similarity[pair]
-
-        for pair in cluster_dissimilarity.keys():
-            a, b = pair
-            a_instances = self.get_cluster_instances(a)
-            b_instances = self.get_cluster_instances(b)
-
-            for i in a_instances:
-                for j in b_instances:
-                    if i != j:
-                        self.instance_dissimilarity[(min(i,j), max(i,j))] = cluster_dissimilarity[pair]
+                        instances[(i, j)] = cluster[pair]
+        return instances
 
     def get_cluster_instances(self, x):
         instances = []
-        stck = []
-        stck.insert(0, x)
+        stck = [x]
         while stck:
             x = int(stck.pop())
             if x >= self.dataset.size:
