@@ -181,59 +181,21 @@ class HCAC:
 
     def select_merge(self, pool: list) -> int:
         entropy = [self.get_entropy(pool[i]) for i in range(len(pool))]
-        selected = entropy.index(min(entropy))
+        s = entropy.index(min(entropy))
+        selected = pool[s]
 
-        self.set_cluster_dissimilarity(pool, selected)
         self.set_cluster_similarity(pool, selected)
+        self.set_cluster_dissimilarity(pool, selected)
 
         return entropy.index(min(entropy))
 
     def update_class_counter(self, pos: int, index: tuple):
-        # print("cid",self.current_id)
-        # print("alias",self.alias)
-        # print("pos", pos)
-        # print("index",index)
-        # print('a', self.cluster.classes_per_cluster)
         for i in range(2):
             if self.alias[index[i]] < self.cluster.max_entries:
                 j = self.current_id[index[i]]
                 self.cluster.classes_per_cluster[pos][self.dataset.label[j]] += 1
             else:
-                # print('oe')
                 self.cluster.classes_per_cluster[pos] += self.cluster.classes_per_cluster[self.alias[index[i]] - self.dataset.size]
-        # print('b', self.cluster.classes_per_cluster)
-        # print()
-    # def get_fscore(self):
-    #     if not self.is_validation:
-    #         raise Exception("The dataset has no label")
-    #     else:
-
-
-    # def get_fscore(self):
-    #     if not self.is_validation:
-    #         raise Exception("The dataset has no label")
-    #     else:
-    #
-    #         f_max = [0 for i in range(self.dataset.number_of_classes)]
-    #         for i in range(self.dataset.size):
-    #             c_size = np.sum(self.cluster.classes_per_cluster[i])
-    #             for j in range(self.dataset.number_of_classes):
-    #                 f = 0
-    #                 k_size = self.cluster.classes_per_cluster[self.dataset.size-2][j]
-    #                 n = self.cluster.classes_per_cluster[i][j]
-    #                 if k_size > 0 and c_size > 0:
-    #                     r = n/k_size
-    #                     p = n/c_size
-    #                     if r + p > 0:
-    #                         f = (2*r*p)/(r+p)
-    #                 else:
-    #                     f = 0
-    #                 if f > f_max[j]:
-    #                     f_max[j] = f
-    #         score = 0
-    #         for i in range(self.dataset.number_of_classes):
-    #             score += f_max[i]*self.cluster.classes_per_cluster[self.dataset.size-2][i]/self.dataset.size
-    #         return score
 
     def set_cluster_similarity(self, pool, selected):
         dist = [self.distance_matrix[pair] for pair in pool]
@@ -244,16 +206,10 @@ class HCAC:
     def set_cluster_dissimilarity(self, pool, selected):
         dist = [self.distance_matrix[pair] for pair in pool]
         max_dist = max(dist)
-        not_selected = pool.remove(selected)
-        for pair in not_selected:
-            alias = self.alias[pair[0]], self.alias[pair[1]]
-            self.cluster_dissimilarity[alias] = max_dist
+        for pair in pool:
+            if pair != selected:
+                alias = self.alias[pair[0]], self.alias[pair[1]]
+                self.cluster_dissimilarity[alias] = max_dist
 
-
-    # def add_to_must_link(self, clusters: tuple):
-    #     aliases = self.alias[clusters[0]], self.alias[clusters[1]]
-    #     self.must_link_clusters.append(aliases)
-    #
-    # def add_to_cannot_link(self, clusters: tuple):
-    #     aliases = self.alias[clusters[0]], self.alias[clusters[1]]
-    #     self.cannot_link_clusters.append(aliases)
+    def get_output(self):
+        return self.cluster, self.cluster_similarity, self.cluster_dissimilarity
