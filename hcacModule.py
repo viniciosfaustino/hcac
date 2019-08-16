@@ -137,7 +137,7 @@ class HCAC:
         row[pair[1]] = np.inf
 
         aux_dist = [np.amin(row)]
-
+        #testar remover o valor ao inves de trocar o valor
         row = np.copy(distance_matrix[pair[1]])
         row[pair[0]] = np.inf
 
@@ -215,18 +215,22 @@ class HCAC:
         for i in range(2):
             if self.alias[pair[i]] < self.cluster.max_entries:
                 j = self.current_id[pair[i]]
-                self.cluster.classes_per_cluster[pos][self.dataset.label[j]] += 1
+                # self.cluster.classes_per_cluster[pos][self.dataset.label[j]] += 1
             else:
                 self.cluster.classes_per_cluster[pos] += self.cluster.classes_per_cluster[self.alias[pair[i]]
                                                                                           - self.dataset.size]
 
     def set_cluster_similarity(self, pool, selected):
+        # manter a primeira similaridade para o par
         dist = [self.distance_matrix[pair] for pair in pool]
         min_dist = min(dist)
-        alias = self.alias[selected[0]], self.alias[selected[1]]
-        self.cluster_similarity[alias] = min_dist
+        pair = self.alias[selected[0]], self.alias[selected[1]]
+        self.cluster_similarity[pair] = min_dist
 
     def set_cluster_dissimilarity(self, pool, selected):
+        # criar restrição de dissimilaridade somente para os pares que estão acima do par selecionado
+
+        # manter a ulltima similaridade para o par
         dist = [self.distance_matrix[pair] for pair in pool]
         max_dist = max(dist)
         for pair in pool:

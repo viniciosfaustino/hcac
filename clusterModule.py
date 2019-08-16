@@ -10,10 +10,13 @@ class Cluster():
         self.max_entries = _number_of_elements
 
     def init_class_counter(self, number_of_classes: int, label: list = None):
-        self.classes_per_cluster = [np.zeros(number_of_classes) for j in range(self.max_entries)]
+        self.classes_per_cluster = [np.zeros(number_of_classes) for j in range(2*self.max_entries-1)]
         self.classes_per_cluster = np.array(self.classes_per_cluster)
-        # for i in range(self.max_entries):
-        #     self.classes_per_cluster[i][label[i]] += 1
+
+        for i in range(self.max_entries):
+            self.classes_per_cluster[i][label[i]] += 1
+        print(self.classes_per_cluster)
+        print("------ fim da inicializacao")
 
     def add_entry(self, pair: tuple, distance: float, number_of_elements: int) -> None:
         self.entries.append([pair[0], pair[1], distance, number_of_elements])
@@ -26,6 +29,7 @@ class Cluster():
 
     def get_class_counter_from_cluster(self, x: int, label: list) -> None:
         x = int(x)
+        father = x
         stck = [x]
         while stck:
             x = int(stck.pop())
@@ -35,4 +39,4 @@ class Cluster():
                 stck.insert(0, self.entries[pos][0])
             else:
                 class_index = int(label[x])
-                self.classes_per_cluster[x][class_index] += 1
+                self.classes_per_cluster[father][class_index] += 1

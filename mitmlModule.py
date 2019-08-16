@@ -28,7 +28,7 @@ class MITML:
 
             A += self.calculate_matrix(slack_matrix_s, lambda_s, similarity, data, np.copy(A), 1, index_s)
             A += self.calculate_matrix(slack_matrix_d, lambda_d, dissimilarity, data, np.copy(A), -1, index_d)
-
+        # print(A)
         return A
 
     def calculate_matrix(self, slack_matrix: dict, lambda_values: np.ndarray, pair_dict: dict, data: np.ndarray,
@@ -64,9 +64,10 @@ class MITML:
             lambda_values[index[pair]] = lambda_values[index[pair]] - alpha
             # 3.8
 
-            part1 = beta*np.multiply(A, dist)
-            part2 = np.multiply(part1, dist.transpose())
-            A = np.multiply(part2, A)
+            part1 = beta*np.multiply(A, xy)
+            part2 = np.multiply(part1, xy.transpose())
+            A += np.multiply(part2, A)
+            # print(A)
 
         return A
 
