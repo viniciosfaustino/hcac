@@ -25,12 +25,10 @@ class MITML:
 
             for pair in similarity.keys():
                 slack_matrix_s[pair] = deepcopy(similarity[pair])
-            old_s = deepcopy(slack_matrix_s)
-            old_d = deepcopy(slack_matrix_d)
-            B = np.copy(A)
-            A += self.calculate_matrix(slack_matrix_s, lambda_s, similarity, data, A, 1, index_s)
-            A += self.calculate_matrix(slack_matrix_d, lambda_d, dissimilarity, data, A, -1, index_d)
-            # print(B - A)
+
+            A += self.calculate_matrix(slack_matrix_s, lambda_s, similarity, data, np.copy(A), 1, index_s)
+            A += self.calculate_matrix(slack_matrix_d, lambda_d, dissimilarity, data, np.copy(A), -1, index_d)
+
         return A
 
     def calculate_matrix(self, slack_matrix: dict, lambda_values: np.ndarray, pair_dict: dict, data: np.ndarray,
@@ -56,31 +54,19 @@ class MITML:
             beta = (delta * alpha) / (1 - delta * alpha * p)
 
             # 3.6
-            q = 0.001 if self.slack + delta * alpha * slack_matrix[pair] == 0. else self.slack + delta * alpha * slack_matrix[pair]
+            q = 0.001 if self.slack + delta * alpha * slack_matrix[pair] == 0. \
+                else self.slack + delta * alpha * slack_matrix[pair]
 
             slack_matrix[pair] = (self.slack * slack_matrix[pair]) / q
-            # print(slack_matrix[pair])
 
             # 3.7
-            if alpha > 0.:
-                print('pinto')
+
             lambda_values[index[pair]] = lambda_values[index[pair]] - alpha
             # 3.8
-            # print(beta * A * dist * dist.transpose() * A)
-            oldA = np.copy(A)
-            # print(dist)
-            # print(A)
 
             part1 = beta*np.multiply(A, dist)
             part2 = np.multiply(part1, dist.transpose())
-            part3 = np.multiply(part2, A)
+            A = np.multiply(part2, A)
 
-            # if beta > 0:
-                # print('1:',part1)
-                # print('2:',part1)
-                # print('3:', part3)
-
-                # print(part3)
-
-        return part3
+        return A
 

@@ -36,14 +36,13 @@ class ML:
         self.hcac = hcac
         self.cluster = hcac.cluster
 
-        self.instance_similarity = self.get_instance_constraints_from_cluster(hcac.cluster_similarity)
-        self.instance_dissimilarity = self.get_instance_constraints_from_cluster(hcac.cluster_dissimilarity)
+        self.get_all_instance_constraints_from_cluster(hcac.cluster_similarity, hcac.cluster_dissimilarity)
 
         identity = np.identity(self.dataset.data.shape[1], dtype=float)
         mitml = MITML(self.slack, 1)
+
         mahalanobis = mitml.run(self.dataset.data, identity, self.instance_similarity, self.instance_dissimilarity)
-        print(mahalanobis)
-        print(self.dataset.data)
+
         mahalanobis_distance_matrix = distance.pdist(self.dataset.data, 'mahalanobis', VI=mahalanobis)
         mahalanobis_hierarchy = linkage(mahalanobis_distance_matrix, method=self.linkage_method,
                                         metric=self.distance_function)
@@ -51,7 +50,7 @@ class ML:
         self.cluster.entries = mahalanobis_hierarchy
         self.cluster.get_class_counter_from_cluster(self.dataset.size, self.dataset.label)
 
-    def get_all_instance_constraints_from_cluster(self, cluster: list, cluster_similarity, cluster_dissimilarity):
+    def get_all_instance_constraints_from_cluster(self, cluster_similarity, cluster_dissimilarity):
         self.instance_similarity = self.get_instance_constraints_from_cluster(cluster_similarity)
         self.instance_dissimilarity = self.get_instance_constraints_from_cluster(cluster_dissimilarity)
 
@@ -67,14 +66,13 @@ class ML:
                         instances[(i, j)] = cluster[pair]
         return instances
 
-    def get_cluster_instances(self, x) -> list:
+    def get_cluster_instances(self, x: int) -> list:
         instances = []
         stck = [x]
         while stck:
             x = int(stck.pop())
             if x >= self.dataset.size:
                 pos = x - self.dataset.size
-                # print(len(self.cluster.entries), pos)
                 stck.insert(0, self.cluster.entries[pos][1])
                 stck.insert(0, self.cluster.entries[pos][0])
             else:
@@ -82,5 +80,5 @@ class ML:
 
         return instances
 
-    def get_output(self):
+    def get_output(self) -> tuple:
         return self.cluster, self.instance_similarity, self.instance_dissimilarity

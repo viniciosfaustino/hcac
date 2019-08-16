@@ -44,7 +44,7 @@ def test_get_entropy():
 
 
 def test_create_pool():
-    assert hcac.create_pool(index=(3, 4)) == pool
+    assert hcac.create_pool(pair=(3, 4)) == pool
 
 
 def test_select_merge():
