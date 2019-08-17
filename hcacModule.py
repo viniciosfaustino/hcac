@@ -87,7 +87,7 @@ class HCAC:
             # when its runnig a validation dataset, the number of real classes in each cluster is updated
             # after mergig two clusters
             if self.is_validation:
-                self.update_class_counter(count - self.dataset.size, index)
+                self.update_class_counter(count, alias_index)
 
             self.current_id = np.delete(self.current_id, index[1])
 
@@ -101,7 +101,7 @@ class HCAC:
         alias_index = (self.alias[0], self.alias[1])
         self.cluster.add_entry(alias_index, self.distance_matrix[0][1], self.dataset.size)
         index = (0, 1)
-        self.update_class_counter(count - self.dataset.size, index)
+        self.update_class_counter(count, alias_index)
 
     def get_pair_to_merge(self) -> tuple:
         """use the merge confidence to decide if there will be a pool, otherwise will use the pair of cluster with the
@@ -213,12 +213,7 @@ class HCAC:
 
     def update_class_counter(self, pos: int, pair: tuple):
         for i in range(2):
-            if self.alias[pair[i]] < self.cluster.max_entries:
-                j = self.current_id[pair[i]]
-                # self.cluster.classes_per_cluster[pos][self.dataset.label[j]] += 1
-            else:
-                self.cluster.classes_per_cluster[pos] += self.cluster.classes_per_cluster[self.alias[pair[i]]
-                                                                                          - self.dataset.size]
+            self.cluster.classes_per_cluster[pos] += self.cluster.classes_per_cluster[pair[i]]
 
     def set_cluster_similarity(self, pool, selected):
         # manter a primeira similaridade para o par
