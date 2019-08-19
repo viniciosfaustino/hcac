@@ -55,7 +55,6 @@ class ML:
         for i in range(self.dataset.size, 2*self.dataset.size-1):
             self.cluster.get_class_counter_from_cluster(i, self.dataset.label)
         # print(self.cluster.classes_per_cluster)
-        print()
 
     def get_all_instance_constraints_from_cluster(self, cluster_similarity, cluster_dissimilarity):
         self.instance_similarity = self.get_instance_constraints_from_cluster(cluster_similarity)

@@ -1,5 +1,7 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from sklearn.datasets import load_iris, load_breast_cancer
 from scipy.cluster.hierarchy import linkage
 
@@ -11,47 +13,45 @@ from evaluationModule import get_fscore
 
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
-    iris = load_iris()
-    dataset = Dataset(iris.data, "iris", iris.target)
+    datasets = ["iris", "new_wine2", "new_ecoli2", "new_ionosphere", "new_habberman", "new_segmentation2"]
+    for d in datasets:
+        path = os.path.join("datasets",d+".data")
+        df = pd.read_csv(path)
+        data = df.values[:, :-1]
+        labels = df.values[:, -1].astype(int)
+        dataset = Dataset(data, d, labels)
 
-    bc = load_breast_cancer()
-    dataset = Dataset(bc.data, "bc", bc.target)
-    user_interventions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.]
-    # user_interventions = [0.5, 0.6, 0.7, 0.8, 0.9, 1.]
-    slack = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.]
-    # user_interventions = [0.5]
-    pool_size = 5
-    no_intervention = HCAC(dataset, pool_size, 0)
-    no_intervention.do_clustering()
-    print(dataset.name)
-    # slack = [0.6]
 
-    for s in slack:
-        score_h = []
-        score_m = []
-        print("slack used:", s)
-        for ui in user_interventions:
-            # print("intervention: ", ui)
-            ml = ML(dataset, pool_size, int(ui * dataset.size) - 2, s)
-            ml.do_clustering()
-            # print("ml:", get_fscore(ml))
-            score_m.append(get_fscore(ml))
+        user_interventions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.]
+        # user_interventions = [0.5, 0.6, 0.7, 0.8, 0.9, 1.]
+        slack = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.]
+        # user_interventions = [0.5]
+        pool_size = 5
+        no_intervention = HCAC(dataset, pool_size, 0)
+        no_intervention.do_clustering()
+        print(dataset.name)
+        # slack = [0.6]
+        for s in slack:
+            print("slack:",s)
+            score_h = []
+            score_m = []
+            for ui in user_interventions:
+                print("intervention: ", ui, end="\r")
+                ml = ML(dataset, pool_size, int(ui * dataset.size) - 2, s)
+                ml.do_clustering()
+                # print("ml:", get_fscore(ml))
+                score_m.append(get_fscore(ml))
 
-            hcac = HCAC(dataset, pool_size, int(ui * dataset.size) - 2)
-            hcac.do_clustering()
-            score_h.append(get_fscore(hcac))
-
-        plt.plot(user_interventions, score_h, label="hcac", color="r")
-        plt.plot(user_interventions, score_m, label="ml", color="b")
-        plt.xlabel("user intervention")
-        plt.ylabel("fscore")
-        plt.legend()
-        # plt.show()
-        plt.savefig(dataset.name+"_"+str(s)+".png")
-        plt.clf()
-
-        # print("HCAC: ", get_fscore(hcac))
-        #     # print("ml", get_fscore(ml))
-        #     #
-        #     # # print("hcac - ml:",get_fscore(hcac) - get_fscore(ml))
-        # print()
+                hcac = HCAC(dataset, pool_size, int(ui * dataset.size) - 2)
+                hcac.do_clustering()
+                score_h.append(get_fscore(hcac))
+            print()
+            plt.plot(user_interventions, score_h, label="hcac", color="r")
+            plt.plot(user_interventions, score_m, label="ml", color="b")
+            plt.xlabel("User Intervention")
+            plt.ylabel("FScore")
+            plt.title(dataset.name+": FScore x User intervention")
+            plt.legend()
+            path = os.path.join("results",dataset.name,dataset.name+"_"+str(s)+".png")
+            plt.savefig(path)
+            plt.clf()
