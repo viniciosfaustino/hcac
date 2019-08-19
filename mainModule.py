@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris, load_breast_cancer
 from scipy.cluster.hierarchy import linkage
 
@@ -23,21 +24,34 @@ if __name__ == '__main__':
     no_intervention = HCAC(dataset, pool_size, 0)
     no_intervention.do_clustering()
     print(dataset.name)
-    # slack = 0.5
-    for ui in user_interventions:
-        print("intervention: ", ui)
-        # for s in slack:
-        #     print("slack used:", s)
-        #     ml = ML(dataset, pool_size, int(ui*dataset.size)-2, s)
-        #     ml.do_clustering()
-        #     # print(ml.cluster.entries)
-        hcac = HCAC(dataset, pool_size, int(ui*dataset.size)-2)
-        hcac.do_clustering()
-            # print("no intervention", get_fscore(no_intervention))
+    # slack = [0.6]
 
+    for s in slack:
+        score_h = []
+        score_m = []
+        print("slack used:", s)
+        for ui in user_interventions:
+            # print("intervention: ", ui)
+            ml = ML(dataset, pool_size, int(ui * dataset.size) - 2, s)
+            ml.do_clustering()
+            # print("ml:", get_fscore(ml))
+            score_m.append(get_fscore(ml))
 
-        print("HCAC: ", get_fscore(hcac))
-            # print("ml", get_fscore(ml))
-            #
-            # # print("hcac - ml:",get_fscore(hcac) - get_fscore(ml))
-        print()
+            hcac = HCAC(dataset, pool_size, int(ui * dataset.size) - 2)
+            hcac.do_clustering()
+            score_h.append(get_fscore(hcac))
+
+        plt.plot(user_interventions, score_h, label="hcac", color="r")
+        plt.plot(user_interventions, score_m, label="ml", color="b")
+        plt.xlabel("user intervention")
+        plt.ylabel("fscore")
+        plt.legend()
+        # plt.show()
+        plt.savefig(dataset.name+"_"+str(s)+".png")
+        plt.clf()
+
+        # print("HCAC: ", get_fscore(hcac))
+        #     # print("ml", get_fscore(ml))
+        #     #
+        #     # # print("hcac - ml:",get_fscore(hcac) - get_fscore(ml))
+        # print()

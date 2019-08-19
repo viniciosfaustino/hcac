@@ -217,21 +217,23 @@ class HCAC:
 
     def set_cluster_similarity(self, pool, selected):
         # manter a primeira similaridade para o par
-        dist = [self.distance_matrix[pair] for pair in pool]
-        min_dist = min(dist)
         pair = self.alias[selected[0]], self.alias[selected[1]]
-        self.cluster_similarity[pair] = min_dist
+        if pair not in self.cluster_similarity.keys():
+            dist = [self.distance_matrix[pair] for pair in pool]
+            min_dist = min(dist)
+            pair = self.alias[selected[0]], self.alias[selected[1]]
+            self.cluster_similarity[pair] = min_dist
 
     def set_cluster_dissimilarity(self, pool, selected):
         # criar restrição de dissimilaridade somente para os pares que estão acima do par selecionado
-
+        # pair = self.alias[selected[0]], self.alias[selected[1]]
         # manter a ulltima similaridade para o par
-        dist = [self.distance_matrix[pair] for pair in pool]
-        max_dist = max(dist)
-        for pair in pool:
+        dist = self.distance_matrix[selected]
+        pos = pool.index(selected)
+        for pair in pool[:pos]:
             if pair != selected:
                 alias = self.alias[pair[0]], self.alias[pair[1]]
-                self.cluster_dissimilarity[alias] = max_dist
+                self.cluster_dissimilarity[alias] = dist
 
     def get_output(self):
         return self.cluster, self.cluster_similarity, self.cluster_dissimilarity
