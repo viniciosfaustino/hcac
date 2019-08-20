@@ -1,9 +1,9 @@
+from math import log
+
 import numpy as np
 from datasetModule import Dataset
 from clusterModule import Cluster
 from sklearn.metrics.pairwise import euclidean_distances, cosine_distances
-from scipy.cluster.hierarchy import linkage
-from math import log
 
 
 class HCAC:
@@ -201,7 +201,7 @@ class HCAC:
         return e
 
     def select_merge(self, pool: list) -> int:
-        # select the merge iwth the lowest entropy and sets the cluster similarity and dissimilarity given the pool
+        # select the merge with the lowest entropy and sets the cluster similarity and dissimilarity given the pool
         entropy = [self.get_entropy(pool[i]) for i in range(len(pool))]
         s = entropy.index(min(entropy))
         selected = pool[s]
@@ -216,7 +216,6 @@ class HCAC:
             self.cluster.classes_per_cluster[pos] += self.cluster.classes_per_cluster[pair[i]]
 
     def set_cluster_similarity(self, pool, selected):
-        # manter a primeira similaridade para o par
         pair = self.alias[selected[0]], self.alias[selected[1]]
         if pair not in self.cluster_similarity.keys():
             dist = [self.distance_matrix[pair] for pair in pool]
@@ -225,9 +224,6 @@ class HCAC:
             self.cluster_similarity[pair] = min_dist
 
     def set_cluster_dissimilarity(self, pool, selected):
-        # criar restrição de dissimilaridade somente para os pares que estão acima do par selecionado
-        # pair = self.alias[selected[0]], self.alias[selected[1]]
-        # manter a ulltima similaridade para o par
         dist = self.distance_matrix[selected]
         pos = pool.index(selected)
         for pair in pool[:pos]:
