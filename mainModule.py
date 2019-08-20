@@ -16,6 +16,10 @@ if __name__ == '__main__':
     datasets = ["iris", "new_wine2", "new_ecoli2", "new_ionosphere", "new_habberman", "new_segmentation2"]
     for d in datasets:
         path = os.path.join("datasets",d+".data")
+        try:
+            os.stat(os.path.join("results", d))
+        except:
+            os.mkdir(os.path.join("results", d))
         df = pd.read_csv(path)
         data = df.values[:, :-1]
         labels = df.values[:, -1].astype(int)
