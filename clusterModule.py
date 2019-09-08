@@ -2,7 +2,7 @@ import numpy as np
 from datasetModule import Dataset
 
 
-class Cluster():
+class Cluster:
     def __init__(self, _number_of_elements: int):
         self.entries = []
         self.cluster_size = np.ones(_number_of_elements)

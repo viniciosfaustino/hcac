@@ -39,7 +39,7 @@ class ML:
         self.get_all_instance_constraints_from_cluster(hcac.cluster_similarity, hcac.cluster_dissimilarity)
 
         identity = np.identity(self.dataset.data.shape[1], dtype=float)
-        mitml = MITML(self.slack, 1)
+        mitml = MITML(self.slack, 5)
 
         mahalanobis = mitml.run(self.dataset.data, identity, self.instance_similarity, self.instance_dissimilarity)
         mahalanobis_distance_matrix = distance.pdist(self.dataset.data, 'mahalanobis', VI=mahalanobis)

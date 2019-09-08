@@ -80,12 +80,12 @@ class HCAC:
             # so there is a mapping to matrix index to cluster valid index
             a = min(self.alias[index[0]], self.alias[index[1]])
             b = max(self.alias[index[0]], self.alias[index[1]])
-            alias_index = a,b
+            alias_index = a, b
 
             self.cluster.add_entry(alias_index, self.distance_matrix[index], number_of_elements)
 
-            # when its runnig a validation dataset, the number of real classes in each cluster is updated
-            # after mergig two clusters
+            # when its running a validation dataset, the number of real classes in each cluster is updated
+            # after merging two clusters
             if self.is_validation:
                 self.update_class_counter(count, alias_index)
 
@@ -100,8 +100,9 @@ class HCAC:
 
         alias_index = (self.alias[0], self.alias[1])
         self.cluster.add_entry(alias_index, self.distance_matrix[0][1], self.dataset.size)
-        index = (0, 1)
-        self.update_class_counter(count, alias_index)
+        if self.is_validation:
+            self.update_class_counter(count, alias_index)
+        self.cluster.get_new_entry_size((0, 1))
 
     def get_pair_to_merge(self) -> tuple:
         """use the merge confidence to decide if there will be a pool, otherwise will use the pair of cluster with the
@@ -165,20 +166,22 @@ class HCAC:
         row = np.append(row_b, [row_a])
         sorted_index = np.argsort(row)
 
-        pool = []
-        size = min(row_a.shape[0], self.pool_size)
+
+        temp = row_a[row_a != np.inf]
+        size = min(temp.shape[0], self.pool_size)
         row_size = sorted_index.shape[0]
 
         # creating the pool with the possible merges by locating which is from the first and second clusters in pair
-        for i in range(size):
+        pool = [pair]
+        for i in range(size-1):
             if sorted_index[i] - row_size/2 >= 0:
                 a = int(sorted_index[i] - row_size/2)
                 pool.append((min(pair[1], a), max(pair[1], a)))
             else:
                 a = sorted_index[i]
                 pool.append((min(pair[0], a), max(pair[0], a)))
-        pool.append(pair)
-        return sorted(pool)
+
+        return pool
 
     def get_entropy(self, pair: tuple):
         # getting the sum of elements in each class
