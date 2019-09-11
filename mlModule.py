@@ -39,22 +39,16 @@ class ML:
         self.get_all_instance_constraints_from_cluster(hcac.cluster_similarity, hcac.cluster_dissimilarity)
 
         identity = np.identity(self.dataset.data.shape[1], dtype=float)
-        mitml = MITML(self.slack, 1)
+        mitml = MITML(self.slack, 5)
 
         mahalanobis = mitml.run(self.dataset.data, identity, self.instance_similarity, self.instance_dissimilarity)
-        # print(mahalanobis)
         mahalanobis_distance_matrix = distance.pdist(self.dataset.data, 'mahalanobis', VI=mahalanobis)
-        # print(mahalanobis_distance_matrix)
-
         mahalanobis_hierarchy = linkage(mahalanobis_distance_matrix, method=self.linkage_method,
                                         metric=self.distance_function)
-
-        # print(mahalanobis_hierarchy)
 
         self.cluster.entries = mahalanobis_hierarchy
         for i in range(self.dataset.size, 2*self.dataset.size-1):
             self.cluster.get_class_counter_from_cluster(i, self.dataset.label)
-        # print(self.cluster.classes_per_cluster)
 
     def get_all_instance_constraints_from_cluster(self, cluster_similarity, cluster_dissimilarity):
         self.instance_similarity = self.get_instance_constraints_from_cluster(cluster_similarity)
@@ -71,7 +65,6 @@ class ML:
                     if i != j:
                         instances[(i, j)] = constraints[pair]
 
-        # print(instances)
         return instances
 
     def get_cluster_instances(self, x: int) -> list:

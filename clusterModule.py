@@ -2,7 +2,7 @@ import numpy as np
 from datasetModule import Dataset
 
 
-class Cluster():
+class Cluster:
     def __init__(self, _number_of_elements: int):
         self.entries = []
         self.cluster_size = np.ones(_number_of_elements)
@@ -15,8 +15,6 @@ class Cluster():
 
         for i in range(self.max_entries):
             self.classes_per_cluster[i][label[i]] += 1
-        # print(self.classes_per_cluster)
-        # print("------ fim da inicializacao")
 
     def add_entry(self, pair: tuple, distance: float, number_of_elements: int) -> None:
         self.entries.append([pair[0], pair[1], distance, number_of_elements])
