@@ -11,12 +11,17 @@ from datasetModule import Dataset
 from evaluationModule import get_fscore
 from utils import split_data_label
 
+def save_results(intervention, score, name):
+    df = pd.DataFrame({"intervention": user_interventions, "fscore": score})
+    path = os.path.join("results", dataset.name, dataset.name + "_"++".csv")
+    df.to_csv(path, index=None)
+
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
     # datasets = ["new_iris", "new_wine2", "new_ecoli2", "new_ionosphere", "new_haberman", "new_segmentation2"]
     # datasets = ["new_wine2", "new_ecoli2", "new_ionosphere", "new_haberman", "new_segmentation2"]
 
-    datasets = ["dilma.data", "brasui.data", "eleicao.data", "tweets.data", "solo.data"]
+    datasets = ["dilma.data", "brasui.data", "solo.data", "eleicao.data", "tweets.data"]
 
     user_interventions = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.]
     slack = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.]
@@ -47,11 +52,19 @@ if __name__ == '__main__':
 
             plt.plot(user_interventions, score_h, label="hcac", color="r")
             plt.plot(user_interventions, score_m, label="ml", color="b")
+
             plt.xlabel("User Intervention")
             plt.ylabel("FScore")
             plt.title(dataset.name + ": FScore x User intervention")
             plt.legend()
             path = os.path.join("results", dataset.name, dataset.name + "_" + str(s) + ".png")
+
+            df_h = pd.DataFrame({"intervention": user_interventions, "fscore": score_h})
+            df_m = pd.DataFrame({"intervention": user_interventions, "fscore": score_m})
+            path = os.path.join("results", dataset.name, dataset.name + "_hcac.csv")
+            df_h.to_csv(path, index=None)
+            path = os.path.join("results", dataset.name, dataset.name + "_hcac_ml.csv")
+            df_m.to_csv(path)
             plt.savefig(path)
             plt.clf()
 
